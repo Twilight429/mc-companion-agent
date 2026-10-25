@@ -4,6 +4,8 @@
 
 团队仓库：[Twilight429/mc-companion-agent](https://github.com/Twilight429/mc-companion-agent)，开发基线分支为 `1.21.1`。
 
+Gitee 同步仓库：[X1nze/mc-companion-agent](https://gitee.com/X1nze/mc-companion-agent)。可转发的 [组员扩展档案 Word 版](handbook/MC陪玩Agent_组员扩展档案_20261025.docx) 包含方向认领与实践验收要求。
+
 ## 从哪里开始
 
 1. 按 [构建与协作指南](TEAM_BUILD.md) 在自己的电脑编译并进入游戏。

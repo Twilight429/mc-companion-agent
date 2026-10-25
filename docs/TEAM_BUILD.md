@@ -24,6 +24,8 @@ $env:JAVA_HOME = 'C:\实际安装位置\jdk-21'
 
 私有库需要负责人在 GitHub Settings → Collaborators 中邀请组员，组员接受邀请后再克隆。每个人使用自己的 GitHub/Git 凭据，不在群聊传令牌。上述 JDK 路径需要改为本人电脑的实际路径。
 
+也可从 Gitee 克隆同一基线：`git clone --branch 1.21.1 https://gitee.com/X1nze/mc-companion-agent.git`。私有仓库先由负责人在仓库管理中添加成员。组内统一约定 PR 入口，避免两个平台同时独立合并而产生分叉。
+
 ## 2. 推荐构建方式
 
 Windows 可运行仓内辅助脚本：

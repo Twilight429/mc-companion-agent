@@ -58,7 +58,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "bd05f888fd660543a0812897577efcbcd26039e9dc292f035fd5538f9aeb3085"
+      "sha256": "838853471cb3b0779ef89e8cc624e3c444662f5b499c2320b9518b13acd7fb69"
     },
     {
       "path": "README_EN.md",
@@ -906,11 +906,11 @@
     },
     {
       "path": "docs/TEAM_BUILD.md",
-      "sha256": "f6b2add841f2902a6fc3235828c7c152179f52441e55604f26e299a3b00c7447"
+      "sha256": "e9c43efb60e4ca1366d10de2d4791628aa76b8ac204ade33630094a56b809db1"
     },
     {
       "path": "docs/TEAM_EXTENSIONS.md",
-      "sha256": "89008bed5aec72f1e8d28679995d9b8212541294463b7d6cb54560f997040196"
+      "sha256": "3be25e148db1c88e813c09a1f593b7be8e2abe6efdbaf5600b5b6805f8354f9b"
     },
     {
       "path": "docs/TEAM_PROVENANCE.md",
@@ -918,7 +918,7 @@
     },
     {
       "path": "docs/TEAM_START.md",
-      "sha256": "da522d8f0c46424b01072f5002c5b650b68fb946a7f8044e759b490bbb7d9f92"
+      "sha256": "a49241dde588a044d64065fa5f460db112e08e09e68cc513636adf3ffc92aa3e"
     },
     {
       "path": "docs/TEAM_VERIFICATION.md",
@@ -1211,6 +1211,10 @@
     {
       "path": "docs/group-chat.md",
       "sha256": "b7e00a6d29f2ac3207cf4facbd77b4c74a2abffbd917e71567f82d0e5c8fe217"
+    },
+    {
+      "path": "docs/handbook/MC陪玩Agent_组员扩展档案_20261025.docx",
+      "sha256": "1a250f20a81426a69f56ee38c518e1e79a8d1ac867719f68c1e5027a6627aff2"
     },
     {
       "path": "docs/input-pipeline.md",
@@ -7967,6 +7971,10 @@
     {
       "path": "tools/audit_team_share.py",
       "sha256": "8de2429f3c984b09443b986903ad46614f0806ce38eda7836e787c6a17cc3732"
+    },
+    {
+      "path": "tools/build_team_extensions_doc.py",
+      "sha256": "66e337bb87e205cbbc0be6d94949d3048e12690bfb3b6e90bf0cba54235b5c5e"
     },
     {
       "path": "tools/extract_terrain.py",
