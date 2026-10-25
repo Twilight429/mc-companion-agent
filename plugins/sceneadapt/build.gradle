@@ -1,0 +1,46 @@
+plugins { id 'numen-plugin' }
+
+neoForge { neoFormVersion = neo_form_version }
+
+dependencies {
+    compileOnly files(project(':numen-api:common').tasks.named('apiJar'))
+}
+
+repositories { mavenCentral() }
+
+// 玩家模型不依赖 MC。独立测试同一份源码，完整 test 仍核验原生 API 与加载环境。
+sourceSets {
+    playerModel {
+        java.srcDir 'src/main/java'
+        java.include '**/PlayerStore.java'
+    }
+    playerModelTest {
+        java.srcDir 'src/test/java'
+        java.include '**/PlayerStoreTest.java'
+        compileClasspath += sourceSets.playerModel.output
+        runtimeClasspath += sourceSets.playerModel.output
+    }
+}
+
+dependencies {
+    playerModelImplementation 'com.google.code.gson:gson:2.10.1'
+    playerModelTestImplementation 'com.google.code.gson:gson:2.10.1'
+    playerModelTestImplementation platform('org.junit:junit-bom:5.11.4')
+    playerModelTestImplementation 'org.junit.jupiter:junit-jupiter'
+    playerModelTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.register('playerModelTest', Test) {
+    group = 'verification'
+    description = 'Test the actual player memory model without launching Minecraft.'
+    testClassesDirs = sourceSets.playerModelTest.output.classesDirs
+    classpath = sourceSets.playerModelTest.runtimeClasspath
+    useJUnitPlatform()
+}
+
+tasks.named('check') { dependsOn 'playerModelTest' }
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.add('-parameters')
+}

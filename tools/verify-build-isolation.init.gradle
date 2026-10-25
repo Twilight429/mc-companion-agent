@@ -1,0 +1,24 @@
+// Optional migration check: reject task file inputs/outputs inside a retired project.
+def retiredRoot = System.getenv('NUMEN_FORBIDDEN_BUILD_ROOT')
+if (!retiredRoot) {
+    throw new GradleException('Set NUMEN_FORBIDDEN_BUILD_ROOT to an absolute directory with this init script')
+}
+def retiredDirectory = new File(retiredRoot)
+if (!retiredDirectory.isAbsolute()) {
+    throw new GradleException('NUMEN_FORBIDDEN_BUILD_ROOT must be an absolute directory')
+}
+def retiredPath = retiredDirectory.canonicalFile.toPath()
+
+gradle.beforeProject { project ->
+    project.tasks.configureEach { task ->
+        task.doFirst {
+            [input: task.inputs.files, output: task.outputs.files].each { kind, files ->
+                files.files.each { file ->
+                    if (file.canonicalFile.toPath().startsWith(retiredPath)) {
+                        throw new GradleException("${task.path} has a retired-project ${kind}: ${file}")
+                    }
+                }
+            }
+        }
+    }
+}

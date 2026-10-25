@@ -1,0 +1,32 @@
+name: Team Fabric 1.21.1
+on:
+  push:
+    branches: ['1.21.1']
+  pull_request:
+    branches: ['1.21.1']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: team-fabric-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  fabric:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v5
+      - name: Generate API resources
+        run: bash gradlew :numen-api:fabric:runDatagen --no-daemon
+      - name: Generate content resources
+        run: bash gradlew :numen:fabric:runDatagen --no-daemon
+      - name: Build Fabric
+        run: bash gradlew :numen:fabric:build --no-daemon
+      - name: Unit tests
+        run: bash gradlew :ai:test :script:test :agent:test :numen-api:common:test :numen:common:test :ui:test :plugins:sceneadapt:test :plugins:sceneadapt:playerModelTest :plugins:ysm:test --no-daemon
+      - name: Native game protocol regression with a local fake model
+        run: bash gradlew :e2e:e2eTest -Pe2eServer=fabric --no-daemon

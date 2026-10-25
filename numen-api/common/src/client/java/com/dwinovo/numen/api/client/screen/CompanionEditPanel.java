@@ -1,0 +1,283 @@
+package com.dwinovo.numen.api.client.screen;
+
+import com.dwinovo.numen.api.brain.Libraries;
+import com.dwinovo.numen.api.brain.Slot;
+import com.dwinovo.numen.api.client.agent.RemoteCompanions;
+import com.dwinovo.numen.api.client.agent.ServerLibraries;
+import com.dwinovo.numen.api.client.agent.KnownSkins;
+import com.dwinovo.numen.api.client.skin.CompanionFace;
+import com.dwinovo.numen.api.client.ui.NumenTheme;
+import com.dwinovo.numen.api.client.ui.mc.McDrawSurface;
+import com.dwinovo.numen.api.client.ui.widget.Dropdown;
+import com.dwinovo.numen.api.data.ModLanguageData;
+import com.google.gson.JsonObject;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * 编辑卡——改一只<b>已创建</b>同伴:人设/模式/模型配置/声线/皮肤五个选择。版式照 Telegram 的"编辑联系人":
+ * 标题下面是她的脸和名字,再往下一行一个选择,右下取消/保存。
+ * 草稿制:选择行只改草稿,点保存才统一落地,且只发真正变过的项(换肤要原地重建身体,误触代价高);
+ * 取消丢弃草稿。草稿基线在开卡时从她的绑定取一次({@link #reset()},服务端推来的状态);四项绑定
+ * (档案、人设、声线、皮肤)改的都是她存档里的绑定。卡里只有"改","删"在头部菜单和资料页上,不在这张卡里。
+ */
+public final class CompanionEditPanel extends ModalCard {
+
+    /** 屏幕侧的面:身份、网络动作与关卡。 */
+    public interface Host {
+        java.util.UUID uuid();
+
+        String name();
+
+        void onClose();
+
+        /** 与服务端 applyGameMode 的门同一判据:有 gamemode 权限或主人在创造。 */
+        boolean canChooseMode();
+
+        /** 名册推来的此刻模式。 */
+        boolean currentCreative();
+
+        void setCreative(boolean creative);
+    }
+
+    private static final String PERSONA_NONE = "__default__";
+    private static final String VOICE_NONE = "__none__";
+    private static final String SKIN_DEFAULT = "__default__";
+    private static final int EDIT_COVER_H=38,EDIT_ROW_H=14;
+
+    /** 编辑草稿;开卡时从真源取基线,保存时与基线比对只落差异。 */
+    private static final class Draft {
+        String personaId;     // null = 默认人设
+        String providerId;    // null = 未绑定(只出现在老档,不许改回)
+        String voiceId;       // null = 无声
+        boolean creative;
+        String skinId = SKIN_DEFAULT;     // SKIN_DEFAULT = 默认皮肤
+    }
+
+    private final Host host;
+
+    private Draft draft = new Draft();
+    private String origPersona, origProvider, origVoice, origSkin;
+    private boolean origCreative;
+
+    private List<String> personaIds = List.of();
+    private List<String> providerIds = List.of();
+    private List<String> voiceIds = List.of();
+    private List<String> skinIds = List.of();
+    /** 没权限改模式时,模式那一行置灰(权限门在服务端也是同一道),悬停给解释。 */
+    private boolean modeLocked;
+    private Dropdown modePick;
+    /** 头部的顶边(layout 时定)。 */
+    private int coverTop;
+    private AppearancePicker appearance;
+    private Dropdown modelPick,texturePick;
+    private com.dwinovo.numen.api.client.ui.widget.Button saveButton,refreshModels;
+    private int appearanceMessageY;
+
+    public CompanionEditPanel(Host host) {
+        this.host = host;
+        Minecraft mc = Minecraft.getInstance();
+        ui.setClipboard(() -> mc.keyboardHandler.getClipboard(),
+                s -> mc.keyboardHandler.setClipboard(s));
+    }
+
+    /** 每次开卡:草稿从当下真相取一次基线。 */
+    @Override
+    void reset() {
+        var uuid = host.uuid();
+        var loop = RemoteCompanions.getOrCreate(uuid);
+        origPersona = loop.personaId();
+        origProvider = loop.providerEntryId();
+        origVoice = loop.voiceId();
+        origCreative = host.currentCreative();
+        // 皮肤当前选择从绑定读;没绑或条目已删 = 默认皮肤。
+        String sk = loop.skinId();
+        origSkin = sk != null && ServerLibraries.skinsInUse().stream().anyMatch(e -> e.id().equals(sk)) ? sk : SKIN_DEFAULT;
+        draft = new Draft();
+        draft.personaId = origPersona;
+        draft.providerId = origProvider;
+        draft.voiceId = origVoice;
+        draft.creative = origCreative;
+        draft.skinId = origSkin;
+        if(appearance!=null) appearance.close();
+        appearance=new AppearancePicker(uuid,this::appearanceChanged);
+        appearance.refresh();
+    }
+
+    /** 头部 + 七行选择和模型查询反馈。 */
+    @Override
+    int height() {
+        return heightFor(EDIT_COVER_H + 7 * EDIT_ROW_H + 16);
+    }
+
+    @Override
+    protected void layout(int top) {
+        // 人设目录可能刚被增删,和召唤卡一样让服务端重扫
+        RemoteCompanions.library().request(Libraries.PERSONA, Libraries.RELOAD, new JsonObject());
+        title(t(ModLanguageData.Keys.EDIT_COMPANION_TITLE));
+        coverTop = top;
+        int ry = top + EDIT_COVER_H;
+
+        List<String> personaNames = new ArrayList<>();
+        List<String> pIds = new ArrayList<>();
+        pIds.add(PERSONA_NONE);
+        personaNames.add(t(ModLanguageData.Keys.SUMMON_PERSONA_NONE));
+        for (ServerLibraries.Persona p : ServerLibraries.personasInUse()) {
+            pIds.add(p.id());
+            personaNames.add(p.name());
+        }
+        personaIds = pIds;
+        String curPersona = draft.personaId == null ? PERSONA_NONE : draft.personaId;
+        option(ry, t(ModLanguageData.Keys.SUMMON_PERSONA_LABEL), personaNames,
+                Math.max(0, personaIds.indexOf(curPersona)),
+                i -> {
+                    String id = personaIds.get(i);
+                    draft.personaId = PERSONA_NONE.equals(id) ? null : id;
+                });
+        ry += EDIT_ROW_H;
+
+        modeLocked = !host.canChooseMode();
+        String survival = t(ModLanguageData.Keys.SUMMON_MODE_SURVIVAL);
+        String creative = t(ModLanguageData.Keys.SUMMON_MODE_CREATIVE);
+        // 改不了时只摆着当前档,置灰点不开(不是没有这一行:她此刻是什么模式照样要看得到)
+        modePick = option(ry, t("numen.summon.mode"),
+                modeLocked ? List.of(draft.creative ? creative : survival) : List.of(survival, creative),
+                modeLocked ? 0 : draft.creative ? 1 : 0,
+                i -> draft.creative = i == 1);
+        modePick.setEnabled(!modeLocked);
+        ry += EDIT_ROW_H;
+
+        List<String> provNames = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        if (draft.providerId == null) {
+            // 老档没绑过:占位首项如实显示,选中任一真档案即入草稿(不许改回"未绑定")。
+            ids.add("");
+            provNames.add(t(ModLanguageData.Keys.EDIT_PROVIDER_UNBOUND));
+        }
+        for (var e : ServerLibraries.providersInUse()) {
+            ids.add(e.id());
+            provNames.add(e.name());
+        }
+        providerIds = ids;
+        option(ry, t(ModLanguageData.Keys.PROVIDER_TITLE), provNames,
+                Math.max(0, providerIds.indexOf(draft.providerId == null ? "" : draft.providerId)),
+                i -> {
+                    String id = providerIds.get(i);
+                    if (!id.isEmpty()) draft.providerId = id;
+                });
+        ry += EDIT_ROW_H;
+
+        List<String> voiceNames = new ArrayList<>();
+        List<String> vIds = new ArrayList<>();
+        vIds.add(VOICE_NONE);
+        voiceNames.add(t(ModLanguageData.Keys.VOICE_BIND_NONE));
+        for (var e : ServerLibraries.voicesInUse()) {
+            vIds.add(e.id());
+            voiceNames.add(e.name());
+        }
+        voiceIds = vIds;
+        String curVoice = draft.voiceId == null ? VOICE_NONE : draft.voiceId;
+        option(ry, t(ModLanguageData.Keys.VOICE_SUMMON_LABEL), voiceNames,
+                Math.max(0, voiceIds.indexOf(curVoice)),
+                i -> {
+                    String id = voiceIds.get(i);
+                    draft.voiceId = VOICE_NONE.equals(id) ? null : id;
+                });
+        ry += EDIT_ROW_H;
+
+        // 皮肤:默认选中当前穿的(绑定里记的选择意图);保存时只有真换了才发包(换肤要原地重建身体)。
+        List<String> skinNames = new ArrayList<>();
+        List<String> sIds = new ArrayList<>();
+        sIds.add(SKIN_DEFAULT);
+        skinNames.add(t(ModLanguageData.Keys.SUMMON_SKIN_DEFAULT));
+        for (var e : ServerLibraries.skinsInUse()) {
+            sIds.add(e.id());
+            skinNames.add(e.name());
+        }
+        skinIds = sIds;
+        option(ry, t(ModLanguageData.Keys.SUMMON_SKIN), skinNames,
+                Math.max(0, skinIds.indexOf(draft.skinId)),
+                i -> draft.skinId = skinIds.get(i));
+        ry+=EDIT_ROW_H;
+        modelPick=option(ry,"NPC 模型 · YSM",appearance.modelLabels(),appearance.modelIndex(),appearance::chooseModel);
+        ry+=EDIT_ROW_H;
+        texturePick=option(ry,"模型贴图",appearance.textureLabels(),appearance.textureIndex(),appearance::chooseTexture);
+        appearanceMessageY=ry+EDIT_ROW_H+2;
+        refreshModels=ui.add(new com.dwinovo.numen.api.client.ui.widget.Button("刷新模型",
+                com.dwinovo.numen.api.client.ui.widget.Button.Style.LINK,appearance::refresh));
+        refreshModels.setBounds(x+8,appearanceMessageY,54,14);
+
+        saveButton=buttons(t(ModLanguageData.Keys.GUI_SETTINGS_CANCEL),()->{
+                    if(!appearance.applying()) { appearance.close(); host.onClose(); }
+                },
+                t(ModLanguageData.Keys.GUI_SETTINGS_SAVE), this::save);
+        appearanceChanged();
+    }
+
+    /** 同一表单的每一行都采用左标签、右侧原生下拉菜单。 */
+    private Dropdown option(int top,String label,List<String> items,int selected,java.util.function.IntConsumer changed) {
+        int pickWidth=(w-24)*58/100, pickX=x+w-12-pickWidth;
+        var text=ui.add(new com.dwinovo.numen.api.client.ui.widget.Label(label,com.dwinovo.numen.api.client.ui.widget.Label.Role.PRIMARY));
+        text.setBounds(x+12,top+2,pickX-x-20,10);
+        var pick=ui.add(new Dropdown(items,selected,changed)); pick.setBounds(pickX,top,pickWidth,EDIT_ROW_H);
+        return pick;
+    }
+    private void appearanceChanged() {
+        if(modelPick!=null) { modelPick.setItems(appearance.modelLabels(),appearance.modelIndex()); modelPick.setEnabled(appearance.modelsEnabled()); }
+        if(texturePick!=null) { texturePick.setItems(appearance.textureLabels(),appearance.textureIndex()); texturePick.setEnabled(appearance.texturesEnabled()); }
+        if(saveButton!=null) saveButton.setEnabled(appearance.canSave());
+        if(refreshModels!=null) refreshModels.setEnabled(!appearance.busy()&&!appearance.dirty());
+    }
+
+    /** 保存:与开卡基线比对,只落真正变过的项,然后关卡。 */
+    private void save() {
+        appearance.save(this::saveBindings);
+    }
+    private void saveBindings() {
+        var uuid = host.uuid();
+        var her = RemoteCompanions.getOrCreate(uuid);
+        if (!Objects.equals(draft.personaId, origPersona)) {
+            her.bind(Slot.PERSONA, draft.personaId);
+        }
+        if (draft.providerId != null && !draft.providerId.equals(origProvider)) {
+            her.bind(Slot.PROVIDER, draft.providerId);
+        }
+        if (!Objects.equals(draft.voiceId, origVoice)) {
+            her.bind(Slot.VOICE, draft.voiceId);
+        }
+        if (!modeLocked && draft.creative != origCreative) {
+            host.setCreative(draft.creative);
+        }
+        if (!draft.skinId.equals(origSkin)) {
+            her.bind(Slot.SKIN, SKIN_DEFAULT.equals(draft.skinId) ? null : draft.skinId);
+        }
+        appearance.close(); host.onClose();
+    }
+
+    // ---- 宿主转发面 ----
+
+    /** 头部:她的脸,旁边加粗的名字(脸是 MC 独有的东西,这一层可以画)。 */
+    @Override
+    protected void paint(McDrawSurface s, NumenTheme.Colors c, int mouseX, int mouseY, long nowMs, float alpha) {
+        appearance.tick();
+        CompanionFace.draw(s.graphics(), host.uuid(), KnownSkins.of(host.uuid()), photoX(), photoY(coverTop), PHOTO);
+        coverName(s, c, coverTop, host.name());
+        Nb.text(s.graphics(),Minecraft.getInstance().font,Nb.clip(Minecraft.getInstance().font,appearance.message(),w-84),x+70,appearanceMessageY+2,c.textSecondary());
+    }
+
+    /** 悬停提示(宿主画 tooltip):置灰的模式行报锁因。 */
+    @Override
+    String tooltipAt(double mx, double my) {
+        if(mx>=x+66&&mx<x+w-8&&my>=appearanceMessageY&&my<appearanceMessageY+14) return appearance.message();
+        return modeLocked && modePick != null && modePick.contains(mx, my)
+                ? t(ModLanguageData.Keys.EDIT_MODE_LOCKED) : null;
+    }
+
+    private static String t(String key) {
+        return I18n.get(key);
+    }
+}

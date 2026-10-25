@@ -1,0 +1,19 @@
+Independent team placeholder resources
+
+The seven resources listed below are generated solely from original geometric
+instructions in tools/prepare_team_source.py. No upstream image pixels are read,
+transformed or copied. The team dedicates these independent resources to the
+public domain under CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+numen-api/common/src/main/resources/assets/numen_api/textures/gui/white.png
+numen-api/common/src/main/resources/assets/numen_api/textures/gui/sprites/chevron_up.png
+numen-api/common/src/main/resources/assets/numen_api/textures/gui/sprites/chevron_down.png
+numen-api/common/src/main/resources/assets/numen_api/textures/gui/sprites/icon_mic.png
+numen-api/common/src/main/resources/assets/numen_api/textures/gui/sprites/icon_compact.png
+numen-api/common/src/main/resources/numen_api.png
+numen/common/src/main/resources/numen.png
+
+All other code and assets retain their respective existing licenses. This notice
+does not license any upstream reserved art, Minecraft assets, YSM models, or
+third-party buildings.

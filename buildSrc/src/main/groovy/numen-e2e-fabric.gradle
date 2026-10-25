@@ -1,0 +1,84 @@
+import com.dwinovo.numen.buildsrc.PaperServer
+import com.dwinovo.numen.buildsrc.TestServer
+
+// 原生 Fabric 起服适配，复用既有端口、配置种子、进程收尾与端到端场景。
+def spec = rootProject.project(':e2e').ext.e2e
+def gameDir = project.file('runs/e2e')
+loom.runs {
+    e2e {
+        server()
+        ideConfigGenerated(false)
+        runDir('runs/e2e')
+        programArg('--nogui')
+    }
+}
+
+def server = gradle.sharedServices.registerIfAbsent('testServer', TestServer) {}
+def game = tasks.named('runE2e')
+def tests = rootProject.project(':e2e').tasks.named('e2eTest')
+
+tasks.register('e2eServerStart') {
+    group = 'verification'
+    description = '起一台原生 Fabric 端到端测试服，独立世界与随机端口'
+    usesService(server)
+    dependsOn { game.get().taskDependencies.getDependencies(game.get()) }
+    dependsOn ':e2e:e2eSeed'
+    doLast {
+        // 初始化工具会清理目录；只能给本项目 runs 下的固定测试目录，不能指向玩家存档。
+        def dir = gameDir.canonicalFile
+        if (dir.parentFile != project.file('runs').canonicalFile || dir.name != 'e2e') {
+            throw new GradleException('Refusing to prepare a directory outside this project runs/e2e')
+        }
+        PaperServer.freshDir(dir, [
+                'online-mode': 'false', 'enforce-secure-profile': 'false',
+                'server-ip': spec.host, 'server-port': spec.port.toString(),
+                'enable-rcon': 'true', 'rcon.port': spec.rconPort.toString(),
+                'rcon.password': spec.rconPassword, 'broadcast-rcon-to-ops': 'false',
+                'level-type': 'minecraft\\:flat', 'generator-settings': PaperServer.FLAT_SETTINGS,
+                'generate-structures': 'false', 'spawn-protection': '0',
+                'difficulty': 'peaceful', 'spawn-monsters': 'false',
+                'view-distance': '4', 'simulation-distance': '4',
+                'max-tick-time': '-1', 'sync-chunk-writes': 'false', 'motd': 'numen Fabric e2e',
+        ])
+        ant.copy(todir: new File(dir, 'config/numen')) { fileset(dir: spec.seed.get().asFile) }
+        ant.copy(todir: new File(dir, 'schematics')) {
+            fileset(dir: rootProject.file('e2e/src/e2eTest/resources/architecture'))
+        }
+
+        // Loom 的完整运行配置：dev-launch-injector、映射与 native 依赖，不另造游戏启动协议。
+        def run = game.get()
+        def configType = loom.class.classLoader.loadClass('net.fabricmc.loom.configuration.ide.RunConfig')
+        def config = configType.runConfig(project, loom.runs.getByName('e2e'))
+        def arguments = config.vmArgs + ['-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8',
+                '-cp', run.classpath.asPath, config.mainClass] + config.programArgs
+        // Java 参数文件避免 Windows 的命令行长度限制；这里只含开发类路径和测试参数，不含玩家密钥。
+        def argsFile = new File(dir, 'launch.args')
+        argsFile.setText(arguments.collect { value ->
+            '"' + value.toString().replace('\\', '\\\\').replace('"', '\\"') + '"'
+        }.join('\n') + '\n', 'UTF-8')
+        def command = [run.javaLauncher.get().executablePath.asFile.absolutePath, '@' + argsFile.absolutePath]
+        def environment = new HashMap<String, String>(System.getenv())
+        config.environmentVariables.each { key, value -> environment.put(key, value.toString()) }
+        def log = new File(dir, 'e2e-server.log')
+        server.get().start(command, dir, environment, log)
+        logger.lifecycle("[numen-e2e] Fabric 起服，日志 ${log}")
+        if (!server.get().awaitReady('Done (', 5 * 60 * 1000L)) {
+            server.get().stop()
+            throw new GradleException("Fabric 服务端没有就绪:\n" + log.readLines('UTF-8').takeRight(80).join('\n'))
+        }
+        logger.lifecycle("[numen-e2e] Fabric 就绪 ${spec.host}:${spec.port}")
+    }
+}
+
+tasks.register('e2eServerStop') {
+    group = 'verification'
+    description = '关闭本次 Fabric 端到端测试服并保留失败日志'
+    usesService(server)
+    doLast {
+        def log = server.get().logFile()
+        server.get().stop()
+        if (log != null && log.exists() && tests.get().state.failure != null) {
+            logger.lifecycle("[numen-e2e] Fabric 日志末尾:\n" + log.readLines('UTF-8').takeRight(100).join('\n'))
+        }
+    }
+}
