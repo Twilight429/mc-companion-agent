@@ -43,10 +43,11 @@ public class PluginGameTests {
         succeedWhen(helper, () -> {
             helper.assertTrue(reply.reply() != null, "status_self has not replied");
             var status = dataIn(reply.reply());
-            // 身体状态片段以 Numen API 渲染的 <worn> 打头,之后接插件登记的片段:这个插件的那段紧跟在 <worn> 后面
-            helper.assertTrue(status.has("body_state") && status.get("body_state").getAsString().startsWith("<worn>")
-                            && status.get("body_state").getAsString()
-                            .endsWith("</worn><gametest_charm>wearing a gametest charm</gametest_charm>"),
+            // 插件片段接在装备信息之后,其间也可以有其它已登记的身体状态贡献者。
+            String bodyState = status.has("body_state") ? status.get("body_state").getAsString() : "";
+            helper.assertTrue(bodyState.startsWith("<worn>") && bodyState.contains("</worn>")
+                            && bodyState.indexOf("<gametest_charm>wearing a gametest charm</gametest_charm>")
+                            > bodyState.indexOf("</worn>"),
                     "status_self leaves out what the plugin reads off her body: " + reply.reply());
             var kept = GameTestKit.events(companion).stream()
                     .filter(e -> e.type().equals("gametest_charm_changed")).toList();

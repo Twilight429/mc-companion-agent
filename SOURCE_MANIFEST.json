@@ -50,7 +50,7 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "sha256": "56ff052c2408cefccb99f2b42c1abc07f540fb862106e39568d09b572dacd039"
+      "sha256": "1bb3aa5a0e6e801c5e605d5e50ec2472b36de350e31bc2a62ca24ffbce9fe072"
     },
     {
       "path": "LICENSE",
@@ -942,7 +942,7 @@
     },
     {
       "path": "docs/TEAM_VERIFICATION.md",
-      "sha256": "7d3764fe085c2cc2d576b9a1c23d35a7627d55dcfbad7139079084a5e64471b5"
+      "sha256": "25d0a33080eb7f07581f68f66fa0dfa94fd751d27ecbd15b634a0a8ceba23fca"
     },
     {
       "path": "docs/VERSION_API_CHANGES.md",
@@ -1282,7 +1282,7 @@
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/Bot.java",
-      "sha256": "e3ccd6a2d35a4f5cbe96e227698e494adcf2609e48a9d1961374ff7be27209e6"
+      "sha256": "91c7d3e973ba4f040fcaf85546b2e7840770127c25d7be8ad368ee3b2a712219"
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/ConsentTest.java",
@@ -1294,7 +1294,7 @@
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/FakeModel.java",
-      "sha256": "10d195835bc79309c197a567eaeab5f6687059633576ac06596af65575af7408"
+      "sha256": "1fdac7962cb7bb28cb5f6465953423be4c721d9a45b1d45d3472e24e814df130"
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/FakeModelSteeringTest.java",
@@ -1318,7 +1318,7 @@
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/NativeClientTest.java",
-      "sha256": "e033761084a2380ee0cb2dd661f16092eeef61611b0886722afa70e6ffde5e5d"
+      "sha256": "c251bac8b3c566d99f0f3c52dd9394538e9a7c32ac4504c3f56432f3e4dfc75c"
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/Rcon.java",
@@ -2722,7 +2722,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/entity/Companions.java",
-      "sha256": "067e021f3def2b7490fe0722f1175441e0564e528f375ac635ef157723b3f6b8"
+      "sha256": "eb26273e9e71e6d0512b0f129b7b939c21ee8b4f42344105bc40f10231b9f581"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/entity/Controls.java",
@@ -5114,7 +5114,7 @@
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/BuildGameTests.java",
-      "sha256": "379804ddff924cfadf8953889dcd31d54989a2ee6bbabc0d7385e3c443092aab"
+      "sha256": "e10de813a700f72ca7e5e4242b4277bdbb8c2227159c3f1e277a8c82646e67b1"
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/CellRouteGameTests.java",
@@ -5134,7 +5134,7 @@
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/CommandGameTests.java",
-      "sha256": "5733850750416e26cefdd64af8a92e3151147d7e37630dfab4c27756d77b4ee0"
+      "sha256": "43926bb7328523256c5746d41fa83bbd5e6622fe68b2c2b8017eab1aef71654a"
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/ContainerGameTests.java",
@@ -5214,7 +5214,7 @@
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/PluginGameTests.java",
-      "sha256": "69395cbfa3ff6dd3bc394a29fd29932cbed66cbccfd9c8d7115fd6db26d00ed1"
+      "sha256": "0c2db1021502b1c9965c4f25eba4646db570dca1bd563f327989f28c5a1c0796"
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/RemoteBrainGameTests.java",
@@ -6746,7 +6746,7 @@
     },
     {
       "path": "numen/pathing/src/gametest/java/com/dwinovo/numen/pathing/gametest/DynamicGameTests.java",
-      "sha256": "8dc6b57eb19dc9ffa9ab2006756fd1b2ea7855fddc4824e3f7a7aefeb7e895a4"
+      "sha256": "3c43db4fb2a5fa2e22bfb5ec81be87d2758f86f50c6288750cd295f47a7741b4"
     },
     {
       "path": "numen/pathing/src/gametest/java/com/dwinovo/numen/pathing/gametest/FacadeGameTests.java",
@@ -6998,7 +6998,7 @@
     },
     {
       "path": "numen/pathing/src/main/java/com/dwinovo/numen/pathing/drive/Driver.java",
-      "sha256": "d7b27b0b6e67f9243e6e1ad9a7f027df7c2595aca6e1be18bab503cf7b67f6f4"
+      "sha256": "975149a2d6bb24bf13fb8a58d84fdd18682be9ce897b6ddbfb25793783342c27"
     },
     {
       "path": "numen/pathing/src/main/java/com/dwinovo/numen/pathing/drive/DropControl.java",

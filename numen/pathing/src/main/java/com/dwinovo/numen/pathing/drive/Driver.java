@@ -482,6 +482,11 @@ public final class Driver {
             state = State.ARRIVED;
             return;
         }
+        if (course.isEmpty() && node != null && !node.equals(end)) {
+            // 零步路线只说明规划时已经站在目标里。身体被推走后从脚下重搜,没有可归罪的最后一步。
+            replan("零步路线的起点已离开,落在 " + PathLog.pos(node));
+            return;
+        }
         rig.keys.release(Key.SPRINT);
         rig.keys.release(Key.JUMP);
         rig.keys.set(Key.SNEAK, endStance.kind() == Stance.Kind.CLIMBING);

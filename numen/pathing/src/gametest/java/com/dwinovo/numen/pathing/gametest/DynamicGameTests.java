@@ -33,6 +33,29 @@ public class DynamicGameTests {
         Worlds.settle(level);
     }
 
+    /** 规划时已在终点的零步路线,身体被推到墙另一侧后必须重搜绕回,不存在可记失败的最后一步。 */
+    @GameTest(template = ARENA, batch = BATCH, timeoutTicks = 500)
+    public static void an_empty_arrival_route_replans_after_the_body_is_displaced(GameTestHelper helper) {
+        Trial t = new Trial(helper).floor();
+        TestBody body = t.body(4, 1, 5);
+        BlockPos start = t.at(4, 1, 5);
+        var stance = new com.dwinovo.numen.pathing.plan.Stance(
+                com.dwinovo.numen.pathing.plan.Stance.Kind.GROUND, start.getY(), start.getY() - 1);
+        var empty = new com.dwinovo.numen.pathing.search.Route(start, stance, java.util.List.of());
+        for (int y = 1; y <= 3; y++) {
+            for (int z = 3; z <= 7; z++) t.change(6, y, z, Blocks.STONE.defaultBlockState());
+        }
+        boolean[] pushed = {false};
+        var request = com.dwinovo.numen.pathing.api.NavRequest.to(Goals.at(start), RouteSpec.defaults()).following(empty);
+        t.go(body, request).within(400).during(r -> {
+            if (!pushed[0]) {
+                pushed[0] = true;
+                BlockPos away = t.at(8, 1, 5);
+                body.moveTo(away.getX() + 0.5, away.getY(), away.getZ() + 0.5, 0, 0);
+            }
+        }).arrives().then(Scenes::unaltered);
+    }
+
     private static double relX(Trial t, Trial.Run r) {
         return r.body.getX() - t.origin.getX();
     }

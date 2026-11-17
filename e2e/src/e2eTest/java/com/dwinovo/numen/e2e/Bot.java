@@ -236,6 +236,10 @@ final class Bot implements AutoCloseable {
     /** 记录请求发出前的位置,相同频道的历史回包不能冒充本次答复。 */
     int payloadMark() { synchronized(lock) { return payloads.size(); } }
 
+    List<Payload> payloadsSince(int since) {
+        synchronized (lock) { return List.copyOf(payloads.subList(since, payloads.size())); }
+    }
+
     boolean hasPayload(Predicate<Payload> wanted) { synchronized(lock) { return payloads.stream().anyMatch(wanted); } }
 
     Payload awaitPayload(int from,Predicate<Payload> wanted,Duration timeout,String what) {

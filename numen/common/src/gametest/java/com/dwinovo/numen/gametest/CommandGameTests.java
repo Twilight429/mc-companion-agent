@@ -76,6 +76,32 @@ public class CommandGameTests {
     /** 夹具组与同名原生指令共用的名字。 */
     private static final String TWIN = "gt_twin";
 
+    /** 登录恢复队列赶在死亡后才执行,仍必须等原生复活计时,不能把死亡条目当休眠。 */
+    @GameTest(template = "floor16", timeoutTicks = 200, batch = "numen_command")
+    public static void login_restoration_cannot_bypass_a_fresh_death(GameTestHelper helper) {
+        var server = helper.getLevel().getServer();
+        var owner = presentOwner(helper, null, "gt_loginwait");
+        var registry = com.dwinovo.numen.api.entity.CompanionRegistry.get(server);
+        var id = java.util.UUID.randomUUID();
+        registry.put(id, new com.dwinovo.numen.api.entity.CompanionRegistry.Entry("gt_waitrespawn",
+                owner.getUUID(), helper.getLevel().dimension(), helper.absolutePos(new BlockPos(4, 2, 4))));
+        long diedAt = server.overworld().getGameTime();
+        registry.markDead(id, "login restoration regression", diedAt);
+        try {
+            com.dwinovo.numen.api.entity.Companions.respawnAllOwnedBy(server, owner.getUUID());
+            helper.assertTrue(server.getPlayerList().getPlayer(id) == null,
+                    "login restoration created a body before the death timer elapsed");
+            helper.assertTrue(registry.find(id).diedAt() == diedAt,
+                    "login restoration cleared the pending death state");
+        } finally {
+            NumenPlayer body = NumenPlayer.findByUuid(server, id);
+            if (body != null) CompanionFactory.despawn(server, body);
+            registry.remove(id);
+            leave(owner);
+        }
+        helper.succeed();
+    }
+
     static {
         if (GameTestKit.numenTestsEnabled()) {
             NumenPlugins.register("gt", numen -> {

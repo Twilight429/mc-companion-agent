@@ -321,8 +321,8 @@ public final class Companions {
     }
 
     /** When an owner logs in, bring back every companion of theirs. A companion that DIED while the owner
-     *  was away (death state persisted in the registry — survives the logout) is respawned-at-owner now
-     *  AND told why it died; a live one is just restored from its {@code .dat}.
+     *  was away keeps its persisted death state for {@link #tickRespawns}, which checks the same delay
+     *  even if this login restoration was queued just before the death. A live one is restored from its {@code .dat}.
      *
      *  <p>逐只隔离:一只回不来是少一只同伴,不该把同一个主人的其余同伴也一起拖掉。 */
     public static void respawnAllOwnedBy(MinecraftServer server, UUID ownerUuid) {
@@ -331,7 +331,7 @@ public final class Companions {
             try {
                 com.dwinovo.numen.api.brain.CompanionBrains.ensure(server, e.getKey());
                 if (e.getValue().diedAt() > 0L) {
-                    if (owner != null) respawnDead(server, e.getKey(), e.getValue(), owner);
+                    continue;   // 死亡不是休眠:登录也由 tickRespawns 等满计时再复活。
                 } else if (e.getValue().removed()) {
                     // 她是被外面请出去的,不替主人重建;他上线了就把这件事告诉他
                     if (owner != null) tellRemoved(owner, e.getValue().name(), e.getValue().removedFor());

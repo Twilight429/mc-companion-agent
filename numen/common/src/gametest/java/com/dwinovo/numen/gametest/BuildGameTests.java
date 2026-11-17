@@ -1684,6 +1684,9 @@ public class BuildGameTests {
                 var m = token.matcher(java.nio.file.Files.readString(doc));
                 while (m.find()) {
                     String body = m.group(1);
+                    if (body.stripLeading().startsWith("numen.") && body.indexOf('(') >= 0) {
+                        continue;   // API 调用中的形参名不是方块 ID,材料列和方块示例仍逐项校验。
+                    }
                     if (body.indexOf('*') >= 0) {
                         continue;   // 通配写法(stripped_*_log)与调色权重(oak_slab*5)
                     }

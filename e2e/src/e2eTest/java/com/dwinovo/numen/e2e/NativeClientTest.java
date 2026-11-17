@@ -62,23 +62,18 @@ class NativeClientTest extends Scenario {
     }
 
 
-    /** 真服务端与客户端协议验证截图归属、附图、超时和历史隔离;这里的 PNG 是测试图,不替代 GPU 渲染验收。 */
-    @Test void npc_camera_reaches_the_model_only_from_the_owner_and_is_request_scoped() throws Exception {
+    /** 真协议验证按需拍照、归属、旧帧与超时;PNG 为测试图,不替代冻结模型和 GPU 渲染验收。 */
+    @Test void explore_requests_fresh_owner_frames_without_injecting_images_into_the_model() throws Exception {
         Bot ownerBot=join("e2e_camera","en_us");
         Bot stranger=join("e2e_camother","en_us");
         summon(ownerBot,"CameraNPC");
         Client owner=new Client(ownerBot);
         new Client(stranger);
         ownerBot.payload("minecraft:register","numen_api:npc_camera_request".getBytes(StandardCharsets.UTF_8));
-        assertEquals("",owner.request("provider","put","{\"name\":\"camera_test\",\"provider\":\"deepseek\",\"protocol\":\"chat\","
-                + "\"model\":\"deepseek-flash\",\"base_url\":\"http://127.0.0.1:"+SPEC.modelPort()+"/v1\"}").problem());
-        assertEquals("",owner.request("key","put","{\"service\":\"deepseek\",\"key\":\""+SPEC.modelKey()+"\"}").problem());
-        int mark=ownerBot.mark();
-        ownerBot.command("numen companion CameraNPC profile my:camera_test");
-        ownerBot.await(mark,m->m.text().contains("my:camera_test"),WAIT,"camera model binding");
         // 单独运行时也有脚下的地面,避免掉落使测试图里的固定眼睛坐标失效。
         console("fill -8 64 -8 8 64 8 minecraft:stone");
-        console("tp CameraNPC 0 65 0"); console("tp e2e_camera 2 65 0");
+        // 原版把整数 X/Z 自动居中到 +0.5;小数写法与下方测试帧的眼睛坐标保持一致。
+        console("tp CameraNPC 0.0 65.0 0.0"); console("tp e2e_camera 2.0 65.0 0.0");
 
         var image=new java.awt.image.BufferedImage(640,360,java.awt.image.BufferedImage.TYPE_INT_RGB);
         var graphics=image.createGraphics();
@@ -86,8 +81,17 @@ class NativeClientTest extends Scenario {
         var pngOut=new java.io.ByteArrayOutputStream();
         javax.imageio.ImageIO.write(image,"png",pngOut);
         byte[] png=pngOut.toByteArray();
-        MODEL.script(a->a.body().contains("camera integration first"),FakeModel.say("Camera integration received."));
-        int payloadMark=ownerBot.payloadMark(); mark=ownerBot.mark();
+        MODEL.whenHeard("camera normal chat",FakeModel.say("Normal chat completed."));
+        int payloadMark=ownerBot.payloadMark(),mark=ownerBot.mark();
+        ownerBot.command("msg CameraNPC camera normal chat");
+        ownerBot.await(mark,m->m.text().contains("Normal chat completed."),WAIT,"normal chat reply");
+        assertTrue(ownerBot.payloadsSince(payloadMark).stream().noneMatch(p->p.channel().equals("numen_api:npc_camera_request")),
+                "ordinary model inference requested a camera frame");
+
+        var explore=FakeModel.tool("explore","{\"reason\":\"camera protocol regression\",\"goal\":\"terrain\","
+                +"\"mode\":\"frontier_exploration\",\"max_duration\":10,\"max_waypoints\":1}");
+        MODEL.whenHeard("camera integration first",explore,FakeModel.say("Camera integration received."));
+        payloadMark=ownerBot.payloadMark(); mark=ownerBot.mark();
         ownerBot.command("msg CameraNPC camera integration first");
         Bot.Payload request=ownerBot.awaitPayload(payloadMark,p->p.channel().equals("numen_api:npc_camera_request"),WAIT,"first-person camera request");
         ByteBuf in=Unpooled.wrappedBuffer(request.data());
@@ -104,23 +108,21 @@ class NativeClientTest extends Scenario {
         assertEquals(calls,MODEL.asked().size(),"a stranger's forged frame completed the request");
         ownerBot.payload("numen_api:npc_camera_reply",reply);
         ownerBot.await(mark,m->m.text().contains("Camera integration received."),WAIT,"camera model reply");
-        var first=MODEL.asked().stream().filter(a->a.body().contains("camera integration first")&&a.body().contains("image_url")).findFirst().orElseThrow();
-        assertTrue(first.body().contains("data:image/png;base64,"));
-        assertTrue(first.body().contains(companion.toString()));
-        assertEquals(1,pictureCount(first.body()));
+        // 隔离服不安装私人视觉权重:验证图片已通过归属/位姿检查,随后在明确的推理配置边界退出。
+        String first=lastCameraResult("camera integration first");
+        assertTrue(first.contains("captured_eye") && first.contains("inference_failed"),first);
+        assertTrue(first.contains("REPLANNING"),first);
 
-        MODEL.script(a->a.body().contains("camera integration timeout"),FakeModel.say("Camera timeout handled."));
+        MODEL.whenHeard("camera integration timeout",explore,FakeModel.say("Camera timeout handled."));
         payloadMark=ownerBot.payloadMark(); mark=ownerBot.mark();
         ownerBot.command("msg CameraNPC camera integration timeout");
         ownerBot.awaitPayload(payloadMark,p->p.channel().equals("numen_api:npc_camera_request"),WAIT,"second camera request");
-        // 上一轮迟到的帧不能冒充这一轮;本次故意不答,确认 3 秒后能继续规划。
+        // 上一轮迟到的帧不能冒充这一轮;故意不答,确认工具明确报告供图不可用。
         ownerBot.payload("numen_api:npc_camera_reply",reply);
         ownerBot.await(mark,m->m.text().contains("Camera timeout handled."),WAIT,"honest missing-camera reply");
-        var second=MODEL.asked().stream().filter(a->a.body().contains("camera integration timeout")).findFirst().orElseThrow();
-        assertEquals(0,pictureCount(second.body()),"previous screenshot was retained in conversation history");
-        assertTrue(second.body().contains("NPC camera unavailable"));
+        assertTrue(lastCameraResult("camera integration timeout").contains("camera_unavailable"));
 
-        MODEL.script(a->a.body().contains("camera integration disabled"),FakeModel.say("Camera disabled respected."));
+        MODEL.whenHeard("camera integration disabled",explore,FakeModel.say("Camera disabled respected."));
         payloadMark=ownerBot.payloadMark(); mark=ownerBot.mark();
         ownerBot.command("msg CameraNPC camera integration disabled");
         request=ownerBot.awaitPayload(payloadMark,p->p.channel().equals("numen_api:npc_camera_request"),WAIT,"disabled camera request");
@@ -133,9 +135,22 @@ class NativeClientTest extends Scenario {
         ownerBot.payload("numen_api:npc_camera_reply",cameraReply(nonce,companion,dimension,new byte[0],
                 "visual experiments are disabled in this client"));
         ownerBot.await(mark,m->m.text().contains("Camera disabled respected."),WAIT,"disabled camera model reply");
-        var disabled=MODEL.asked().stream().filter(a->a.body().contains("camera integration disabled")).findFirst().orElseThrow();
-        assertEquals(0,pictureCount(disabled.body()));
-        assertFalse(disabled.body().contains("NPC camera unavailable"),"disabled vision still injected a visual placeholder");
+        assertTrue(lastCameraResult("camera integration disabled").contains("camera_unavailable"));
+        assertTrue(MODEL.asked().stream().allMatch(a->pictureCount(a.body())==0),
+                "a camera frame entered LLM context or conversation history");
+        MODEL.whenHeard("camera explicit finish",FakeModel.tool("explore","{\"goal\":\"finish\",\"reason\":\"camera tests finished\"}"),
+                FakeModel.say("Camera exploration ended."));
+        payloadMark=ownerBot.payloadMark(); mark=ownerBot.mark();
+        ownerBot.command("msg CameraNPC camera explicit finish");
+        ownerBot.await(mark,m->m.text().contains("Camera exploration ended."),WAIT,"explicit exploration finish");
+        assertTrue(lastCameraResult("camera explicit finish").contains("NORMAL_TASK"));
+        assertTrue(ownerBot.payloadsSince(payloadMark).stream().noneMatch(p->p.channel().equals("numen_api:npc_camera_request")),
+                "finish requested another frame");
+    }
+
+    private static String lastCameraResult(String phrase) {
+        return MODEL.asked().stream().filter(a->a.body().contains(phrase)).flatMap(a->a.toolResults().stream())
+                .reduce((a,b)->b).orElseThrow();
     }
 
     private static int pictureCount(String body) {

@@ -35,8 +35,8 @@ final class FakeModel implements AutoCloseable {
         /** 一句话,回合到此为止。 */
         record Say(String text) implements Reply {}
 
-        /** 派一段 Lua 去跑,回执回来再问一次。 */
-        record Lua(String code) implements Reply {}
+        /** 派一个原生工具,回执回来再问一次。 */
+        record Tool(String name, String arguments) implements Reply {}
     }
 
     static Reply say(String text) {
@@ -44,7 +44,13 @@ final class FakeModel implements AutoCloseable {
     }
 
     static Reply lua(String code) {
-        return new Reply.Lua(code);
+        JsonObject args = new JsonObject();
+        args.addProperty("code", code);
+        return tool("lua", args.toString());
+    }
+
+    static Reply tool(String name, String arguments) {
+        return new Reply.Tool(name, arguments);
     }
 
     /** 一次请求里场景关心的部分。 */
@@ -147,7 +153,7 @@ final class FakeModel implements AutoCloseable {
     private Chosen take(Script script) {
         script.started = true;
         Reply reply = script.replies.poll();
-        script.awaiting = reply instanceof Reply.Lua ? "call_e2e_" + (++calls) : null;
+        script.awaiting = reply instanceof Reply.Tool ? "call_e2e_" + (++calls) : null;
         return new Chosen(reply, script.awaiting);
     }
 
@@ -214,12 +220,10 @@ final class FakeModel implements AutoCloseable {
                 delta.addProperty("content", say.text());
                 finish = "stop";
             }
-            case Reply.Lua lua -> {
-                JsonObject arguments = new JsonObject();
-                arguments.addProperty("code", lua.code());
+            case Reply.Tool tool -> {
                 JsonObject function = new JsonObject();
-                function.addProperty("name", "lua");
-                function.addProperty("arguments", arguments.toString());
+                function.addProperty("name", tool.name());
+                function.addProperty("arguments", tool.arguments());
                 JsonObject call = new JsonObject();
                 call.addProperty("index", 0);
                 call.addProperty("id", chosen.callId());
