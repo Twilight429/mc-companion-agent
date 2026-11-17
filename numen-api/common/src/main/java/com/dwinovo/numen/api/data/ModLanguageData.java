@@ -536,6 +536,7 @@ public final class ModLanguageData {
         public static final String PERSONA_NAME_PLACEHOLDER = "numen.persona.name_placeholder";
         public static final String STT_DOUBAO_KEY_PLACEHOLDER = "numen.stt.doubao_key_placeholder";
         public static final String THEME_TALK_HINT = "numen.theme.talk_hint";
+        public static final String EXPERIMENTAL_VISION = "numen.settings.experimental_vision";
         public static final String THEME_INITIATIVE = "numen.theme.initiative";
         public static final String THEME_INITIATIVE_HINT = "numen.theme.initiative_hint";
         public static final String VOICE_TEST_SENTENCE = "numen.voice.test_sentence";
@@ -1243,6 +1244,7 @@ public final class ModLanguageData {
         adder.add(Keys.PERSONA_NAME_PLACEHOLDER, "Name (also the file name), e.g. Ember");
         adder.add(Keys.STT_DOUBAO_KEY_PLACEHOLDER, "API Key (old console: appid:access_token)");
         adder.add(Keys.THEME_TALK_HINT, "Quick-talk hint (shows the key when your crosshair is on a companion)");
+        adder.add(Keys.EXPERIMENTAL_VISION, "Visual experiments (NPC camera and prediction input; off by default)");
         adder.add(Keys.THEME_INITIATIVE, "Initiative");
         adder.add(Keys.THEME_INITIATIVE_HINT, "Low = hears of world changes sooner, spends more tokens; high = later, spends less");
         adder.add(Keys.VOICE_TEST_SENTENCE, "Hi, I'm your companion, and this is my voice.");
@@ -1948,6 +1950,7 @@ public final class ModLanguageData {
         adder.add(Keys.PERSONA_NAME_PLACEHOLDER, "名称(即文件名),如 小焰");
         adder.add(Keys.STT_DOUBAO_KEY_PLACEHOLDER, "API Key(旧版控制台填 appid:access_token)");
         adder.add(Keys.THEME_TALK_HINT, "快捷对话提醒(准星指着同伴时提示按键)");
+        adder.add(Keys.EXPERIMENTAL_VISION, "视觉实验（NPC 相机与模型预测输入，默认关闭）");
         adder.add(Keys.THEME_INITIATIVE, "主动性");
         adder.add(Keys.THEME_INITIATIVE_HINT, "小 = 世界变化知道得及时,更费 token;大 = 知道得晚,更省");
         adder.add(Keys.VOICE_TEST_SENTENCE, "你好,我是你的同伴,这是我的声音。");

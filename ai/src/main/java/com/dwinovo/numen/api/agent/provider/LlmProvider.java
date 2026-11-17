@@ -36,6 +36,12 @@ public interface LlmProvider {
     /** Build the user-role wire message for {@code content}. */
     JsonObject buildUserMessage(String content);
 
+    /** 请求期现场图像:只在支持的协议上编码,不改变已记录的用户消息。 */
+    default JsonObject buildUserMessage(com.dwinovo.numen.api.agent.llm.RequestPicture picture) {
+        if (picture.pngDataUrl() == null) return buildUserMessage(picture.description());
+        throw new IllegalArgumentException("this protocol does not encode request pictures");
+    }
+
     /** Build the tool-role wire message echoing {@code toolCallId}'s result. */
     JsonObject buildToolResultMessage(String toolCallId, String content);
 

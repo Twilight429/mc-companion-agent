@@ -160,6 +160,19 @@ public enum Groups {
         }
     },
 
+    /** 主人为当前伙伴选择保留的物品;丢弃规则引用同一份偏好。 */
+    KEPT_ITEM("kept_item", "protected by this companion's discard settings", Set.of()) {
+        @Override
+        boolean test(ActView v, String arg) {
+            return v.action().item() != null && v.facts().discardPolicy().protects(v.action().item());
+        }
+
+        @Override
+        Component shown(ActView v, String arg) {
+            return Component.literal("伙伴丢弃保护清单中的物品");
+        }
+    },
+
     HAZARD_ITEM("hazard_item", "is a hazard", Set.of()) {
         @Override
         boolean test(ActView v, String arg) {

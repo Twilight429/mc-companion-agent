@@ -3,12 +3,13 @@ import com.dwinovo.numen.buildsrc.TestServer
 
 // 原生 Fabric 起服适配，复用既有端口、配置种子、进程收尾与端到端场景。
 def spec = rootProject.project(':e2e').ext.e2e
-def gameDir = project.file('runs/e2e')
+def isolatedWorkspace = providers.gradleProperty('e2eWorkspace').orNull
+def gameDir = isolatedWorkspace == null ? project.file('runs/e2e') : new File(isolatedWorkspace, 'fabric-server')
 loom.runs {
     e2e {
         server()
         ideConfigGenerated(false)
-        runDir('runs/e2e')
+        runDir(gameDir.absolutePath)
         programArg('--nogui')
     }
 }
@@ -24,9 +25,13 @@ tasks.register('e2eServerStart') {
     dependsOn { game.get().taskDependencies.getDependencies(game.get()) }
     dependsOn ':e2e:e2eSeed'
     doLast {
-        // 初始化工具会清理目录；只能给本项目 runs 下的固定测试目录，不能指向玩家存档。
+        // 外部工作目录只接受从未存在的新服务端目录,不清理历史测试或玩家存档。
         def dir = gameDir.canonicalFile
-        if (dir.parentFile != project.file('runs').canonicalFile || dir.name != 'e2e') {
+        if (isolatedWorkspace != null) {
+            if (dir.parentFile != new File(isolatedWorkspace).canonicalFile || dir.name != 'fabric-server' || dir.exists()) {
+                throw new GradleException('External fabric-server directory must be new and directly inside e2eWorkspace')
+            }
+        } else if (dir.parentFile != project.file('runs').canonicalFile || dir.name != 'e2e') {
             throw new GradleException('Refusing to prepare a directory outside this project runs/e2e')
         }
         PaperServer.freshDir(dir, [
@@ -41,6 +46,12 @@ tasks.register('e2eServerStart') {
                 'max-tick-time': '-1', 'sync-chunk-writes': 'false', 'motd': 'numen Fabric e2e',
         ])
         ant.copy(todir: new File(dir, 'config/numen')) { fileset(dir: spec.seed.get().asFile) }
+        def applicationConfig = providers.gradleProperty('e2eApplicationConfig').orNull
+        if (applicationConfig != null) {
+            def base = new File(new File(applicationConfig).parentFile,'numen.json')
+            if (!base.isFile()) throw new GradleException('Application numen.json is missing')
+            new File(dir,'config/numen.json').bytes = base.bytes
+        }
         ant.copy(todir: new File(dir, 'schematics')) {
             fileset(dir: rootProject.file('e2e/src/e2eTest/resources/architecture'))
         }

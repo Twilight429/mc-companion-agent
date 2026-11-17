@@ -26,11 +26,18 @@ public final class LlmMind implements Mind {
     private final ProviderLibrary library;
     private final UUID owner;
     private final ServerKeyQuota quota;
+    private final net.minecraft.server.MinecraftServer server;
 
     public LlmMind(ProviderLibrary library, UUID owner, ServerKeyQuota quota) {
+        this(library, owner, quota, null);
+    }
+
+    public LlmMind(ProviderLibrary library, UUID owner, ServerKeyQuota quota,
+                   net.minecraft.server.MinecraftServer server) {
         this.library = library;
         this.owner = owner;
         this.quota = quota;
+        this.server = server;
     }
 
     @Override
@@ -66,12 +73,14 @@ public final class LlmMind implements Mind {
         CompletableFuture<NumenLlmClient.ChatResult> result;
         Keys.Found key = library.key(provider);
         try {
-            result = NumenLlmClient.forEndpoint(library.resolve(provider)).chatStreaming(request.messages(),
+            LlmEndpoint endpoint = library.resolve(provider);
+            // 图像只由探索工具按需采集,普通推理不索取画面。
+            result = NumenLlmClient.forEndpoint(endpoint).chatStreaming(request.messages(),
                     request.tools(), request.systemPrompt(), companion.toString(), cancel, delta -> {
                         if (!cancel.isCancelled()) {
                             onDelta.accept(new ModelPort.Delta(delta.content(), delta.reasoning()));
                         }
-                    });
+                    }, null);
         } catch (RuntimeException ex) {
             result = CompletableFuture.failedFuture(ex);
         }

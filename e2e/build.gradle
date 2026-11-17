@@ -154,3 +154,26 @@ tasks.register('liveArchitectureProbe', JavaExec) {
         systemProperty 'live.design.report', layout.buildDirectory.file('reports/live-architecture/summary.json').get().asFile.absolutePath
     }
 }
+
+tasks.register('liveEnvironmentProbe', JavaExec) {
+    group = 'verification'
+    description = 'Verify the application model through the native Agent using a small read-only world query'
+    dependsOn 'e2eTestClasses', "${serverProject}:e2eServerStart"
+    finalizedBy "${serverProject}:e2eServerStop"
+    classpath = sourceSets.e2eTest.runtimeClasspath
+    mainClass = 'com.dwinovo.numen.e2e.LiveEnvironmentProbe'
+    doFirst {
+        if (!System.getenv('NUMEN_LIVE_PROFILE_FILE') || !System.getenv('NUMEN_LIVE_KEY_FILE'))
+            throw new GradleException('Application profile/key file paths are required')
+        def workspace = providers.gradleProperty('e2eWorkspace').get()
+        def spec = project.ext.e2e
+        ['host','port','modelPort','modelKey','modelProfile'].each { key ->
+            def names = [host:'host',port:'port',modelPort:'model.port',modelKey:'model.key',modelProfile:'model.profile']
+            systemProperty "e2e.${names[key]}", spec[key]
+        }
+        systemProperty 'e2e.rcon.port', spec.rconPort
+        systemProperty 'e2e.rcon.password', spec.rconPassword
+        systemProperty 'live.environment.report', new File(workspace,'live-result.json').absolutePath
+        systemProperty 'live.environment.serverLog', new File(workspace,'fabric-server/e2e-server.log').absolutePath
+    }
+}

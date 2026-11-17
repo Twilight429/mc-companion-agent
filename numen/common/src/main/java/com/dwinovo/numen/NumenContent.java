@@ -68,6 +68,7 @@ public final class NumenContent {
     public static void init() {
         if (initialised) return;
         initialised = true;
+        ToolRegistry.register(new com.dwinovo.numen.explore.ExploreTool());
         registerTools();
         registerTaskRunners();
         // 原版四件甲是第一处穿戴来源,和模组的饰品栏走同一扇门;内嵌联动在这之后才开闸,所以原版排在最前
@@ -128,6 +129,8 @@ public final class NumenContent {
     private static void registerTools() {
         com.dwinovo.numen.api.NumenPlugins.register(com.dwinovo.numen.api.NumenPlugins.NUMEN, numen -> {
             api = numen;
+            numen.registerEventType("exploration_result",false);
+            numen.contributeBodyState(com.dwinovo.numen.explore.ExploreTool::state);
             com.dwinovo.numen.tools.perception.StatusApi.install(numen);
             com.dwinovo.numen.tools.perception.ScanApi.install(numen);
             com.dwinovo.numen.tools.locate.LocateApi.install(numen);

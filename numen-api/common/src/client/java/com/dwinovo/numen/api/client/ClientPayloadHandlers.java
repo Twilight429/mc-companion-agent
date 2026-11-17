@@ -32,6 +32,8 @@ public final class ClientPayloadHandlers {
      * 客户端启动钩子上。
      */
     public static void install() {
+        com.dwinovo.numen.api.brain.NpcCamera.Request.onClient =
+                com.dwinovo.numen.api.client.camera.NpcCameraRenderer::accept;
         ClientPayloadSink.companionList = ClientPayloadHandlers::handleCompanionList;
         ClientPayloadSink.consent = com.dwinovo.numen.api.client.consent.ConsentCards::accept;
         // 身体状态只给物品页画(ClientNumenState);大脑在服务端,直接读身体,不吃这一包

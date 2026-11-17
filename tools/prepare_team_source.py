@@ -5,6 +5,7 @@ the small restricted upstream UI assets with independently drawn primitives.
 No downloads, model calls, credentials or writes to the source checkout.
 """
 import argparse
+from datetime import date
 import hashlib
 import json
 from pathlib import Path
@@ -81,7 +82,7 @@ def write_manifest(destination, paths=None):
         if b'\0' not in data: data=data.replace(b'\r\n',b'\n')
         records.append({'path':name,'sha256':hashlib.sha256(data).hexdigest()})
     document={'upstream':'https://github.com/Dwinovo/minecraft-numen','upstream_commit':'daae0f14a00dfa8ab302683e93609cc862bf0798',
-              'snapshot_date':'2026-10-25','hash_basis':'SHA256; files without NUL bytes have CRLF normalized to LF','files':records}
+              'snapshot_date':date.today().isoformat(),'hash_basis':'SHA256; files without NUL bytes have CRLF normalized to LF','files':records}
     (destination/'SOURCE_MANIFEST.json').write_text(json.dumps(document,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     return len(records)
 

@@ -100,7 +100,7 @@ public final class CompanionBrains {
         Homes homes = Homes.of(server);
         McpClients.of(server).owner(owner);   // 他自己接进来的 MCP 服务器,从这一刻起连着
         CompanionLoop loop = create(server, companion, owner, homes.companion(companion),
-                new LlmMind(ModelServices.of(server).providers(owner), owner, ModelServices.of(server).quota()),
+                new LlmMind(ModelServices.of(server).providers(owner), owner, ModelServices.of(server).quota(), server),
                 Replies.link(server, owner),
                 () -> OwnerPresence.present(server, owner),
                 () -> com.dwinovo.numen.api.mcp.server.McpMode.instance().driving(owner, companion));

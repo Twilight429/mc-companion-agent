@@ -111,7 +111,7 @@ public final class CompanionEditPanel extends ModalCard {
     /** 头部 + 七行选择和模型查询反馈。 */
     @Override
     int height() {
-        return heightFor(EDIT_COVER_H + 7 * EDIT_ROW_H + 16);
+        return heightFor(EDIT_COVER_H + 8 * EDIT_ROW_H + 16);
     }
 
     @Override
@@ -206,6 +206,13 @@ public final class CompanionEditPanel extends ModalCard {
         modelPick=option(ry,"NPC 模型 · YSM",appearance.modelLabels(),appearance.modelIndex(),appearance::chooseModel);
         ry+=EDIT_ROW_H;
         texturePick=option(ry,"模型贴图",appearance.textureLabels(),appearance.textureIndex(),appearance::chooseTexture);
+        ry+=EDIT_ROW_H;
+        var discardSettings=ui.add(new com.dwinovo.numen.api.client.ui.widget.Button("物品丢弃保护…",
+                com.dwinovo.numen.api.client.ui.widget.Button.Style.LINK,()-> {
+                    Minecraft mc=Minecraft.getInstance();
+                    mc.setScreen(new DiscardSettingsScreen(mc.screen,host.uuid(),host.name()));
+                }));
+        discardSettings.setBounds(x+8,ry,w-16,EDIT_ROW_H);
         appearanceMessageY=ry+EDIT_ROW_H+2;
         refreshModels=ui.add(new com.dwinovo.numen.api.client.ui.widget.Button("刷新模型",
                 com.dwinovo.numen.api.client.ui.widget.Button.Style.LINK,appearance::refresh));

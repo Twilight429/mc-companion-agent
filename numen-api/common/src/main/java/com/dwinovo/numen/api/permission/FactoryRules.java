@@ -11,7 +11,8 @@ import java.util.List;
  *
  * <h2>硬规则</h2>
  * 命中即拒,模式、主人层、任务期授权都解不开:别人的东西,以及显式保护的建筑格。建筑保护经真实主人的原生征询确认解除,
- * 不是通过给模型更宽的规则或 bypass 绕过。
+ * 不是通过给模型更宽的规则或 bypass 绕过。丢弃保护清单由主人在伙伴设置里编辑,模型不能自行解除;
+ * 非保护物品出厂允许丢弃,主人自己的 deny / ask 行仍优先。
  *
  * <h2>出厂层</h2>
  * 读法:没人的随便挖、随便打;她自己的随便拆(装着东西的除外);主人的、说不清的、村子里的要问;别人的碰不得(硬规则)。
@@ -33,6 +34,7 @@ public final class FactoryRules {
 
     /** 硬规则原文:都是拒绝。 */
     public static final List<String> HARD = List.of(
+            "drop(kept_item)",
             "break(protected)",
             "place(protected)",
             "break(other)",
@@ -57,6 +59,7 @@ public final class FactoryRules {
             "take(owner)",
             "take(self)",
             "take(structure & !structure(#minecraft:village))",
+            "drop(!kept_item)",
             "command(help)",
             "command(list)",
             "command(me)",
@@ -77,7 +80,6 @@ public final class FactoryRules {
             "attack(named)",
             "attack(villager)",
             "use_entity(owner)",
-            "drop(*)",
             "place(hazard_item & near(owner))");
 
     private static final List<Rule> HARD_RULES = HARD.stream().map(Groups::parse).toList();

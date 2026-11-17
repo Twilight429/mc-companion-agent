@@ -41,6 +41,29 @@ public final class PermissionApi {
 
     private PermissionApi() {}
 
+    public record DiscardSettings(boolean protectWood, boolean protectMinerals, List<String> alwaysKeep,
+                                  List<String> discardExceptions, List<String> protectedCarried,
+                                  List<String> unprotectedCarried) {}
+
+    @Fn("Read your owner's per-companion discard settings and which carried item types they protect.")
+    @Example("numen.permission.discard_settings()")
+    @Note("Read-only. Protected items cannot be dropped. Unprotected means this discard policy allows cleanup; "
+            + "other permission rules may still ask or deny. Do not throw away useful food, tools or task supplies just because they are allowed. "
+            + "Your owner edits this list in Edit Companion > Item discard protection.")
+    public static DiscardSettings discard_settings(ServerCall call) {
+        var her = call.her();
+        PermissionStore store = storeOf(her);
+        DiscardPolicy policy = store == null ? DiscardPolicy.DEFAULT : store.discardOf(her.getUUID());
+        java.util.Set<String> protectedItems = new java.util.TreeSet<>(), unprotected = new java.util.TreeSet<>();
+        for (int slot = 0; slot < her.getInventory().getContainerSize(); slot++) {
+            var stack = her.getInventory().getItem(slot);
+            if (!stack.isEmpty()) (policy.protects(stack.getItem()) ? protectedItems : unprotected)
+                    .add(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+        }
+        return new DiscardSettings(policy.wood(), policy.minerals(), policy.keep().stream().sorted().toList(),
+                policy.discard().stream().sorted().toList(), List.copyOf(protectedItems), List.copyOf(unprotected));
+    }
+
     /** 她此刻受着的规则,一行一条,写法和 {@code add}/{@code remove} 认的一样。 */
     public record Rules(
             @Doc("Rules the server owner set; nobody can lift them, not even your owner.") List<String> hard,
@@ -54,7 +77,7 @@ public final class PermissionApi {
             + "what no row says is asked of your owner.")
     @Note("Rows are written verb(condition) @Name: verbs break, place, attack, use_block, use_entity, take, drop, "
             + "command; conditions combine groups (self, owner, other, structure, nature, unknown), properties "
-            + "(protected, block_entity, contents, named, villager, hostile, hazard_item, near(owner)), ids (minecraft:chest), "
+            + "(protected, kept_item, block_entity, contents, named, villager, hostile, hazard_item, near(owner)), ids (minecraft:chest), "
             + "tags (#c:chests) with & | ! and parentheses; @Name limits a row to one companion.")
     @SeeAlso({"numen.permission.deny", "numen.permission.ask", "numen.permission.allow", "numen.permission.remove"})
     public static Rules rules(ServerCall call) {

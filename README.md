@@ -8,6 +8,12 @@ Gitee 同步仓库：[X1nze/mc-companion-agent](https://gitee.com/X1nze/mc-compa
 
 可转发的 [组员扩展档案 Word 版](docs/handbook/MC陪玩Agent_组员扩展档案_20261025.docx) 包含五个自选方向、实践与验收要求及认领表。
 
+## 最新交付：Explore V2（2026-11-17 同步）
+
+已同步最终验收的目标驱动连续探索：一次 `explore` 调用内部重新感知、验证完整路径并执行多个航点，受距离、时间和航点预算约束。普通推理不自动索图；视觉需要主人客户端在线并开启视觉功能，冻结模型在本地配置，不随源码上传。
+
+参见 [Explore V2 接口与实测](docs/EXPLORATION_V2.md)、[安装与上下文说明](docs/EXPLORATION_DELIVERY.md)、[本次源码复核](docs/TEAM_VERIFICATION.md)。本次只更新 GitHub；Gitee 尚未同步这次交付。
+
 ## 从哪里开始
 
 1. 按 [构建与协作指南](docs/TEAM_BUILD.md) 在自己的电脑编译并进入游戏。

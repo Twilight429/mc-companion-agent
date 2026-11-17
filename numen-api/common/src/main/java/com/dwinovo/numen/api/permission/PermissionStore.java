@@ -120,13 +120,16 @@ public final class PermissionStore extends SavedData {
             TABLE.optionalFieldOf("deny", List.of()).forGetter(s -> s.tables.get(Verdict.Kind.DENY)),
             TABLE.optionalFieldOf("ask", List.of()).forGetter(s -> s.tables.get(Verdict.Kind.ASK)),
             TABLE.optionalFieldOf("allow", List.of()).forGetter(s -> s.tables.get(Verdict.Kind.ALLOW)),
-            Account.CODEC.listOf().optionalFieldOf("hits", List.of()).forGetter(PermissionStore::accounts)
+            Account.CODEC.listOf().optionalFieldOf("hits", List.of()).forGetter(PermissionStore::accounts),
+            Codec.unboundedMap(UUIDUtil.STRING_CODEC, DiscardPolicy.CODEC)
+                    .optionalFieldOf("discardPolicies", Map.of()).forGetter(s -> s.discardPolicies)
     ).apply(i, PermissionStore::new));
 
     private static final SavedData.Factory<PermissionStore> FACTORY = new SavedData.Factory<>(
             PermissionStore::new, PermissionStore::load, DataFixTypes.SAVED_DATA_RANDOM_SEQUENCES);
 
     private final Map<UUID, Mode> modes = new HashMap<>();
+    private final Map<UUID, DiscardPolicy> discardPolicies = new HashMap<>();
     /** 三张表的行;每次改动换一份新的列表。 */
     private final Map<Verdict.Kind, List<Row>> tables = new EnumMap<>(Verdict.Kind.class);
     private RuleSet rules = RuleSet.EMPTY;
@@ -142,8 +145,9 @@ public final class PermissionStore extends SavedData {
     }
 
     private PermissionStore(Map<UUID, String> modeNames, List<Row> deny, List<Row> ask, List<Row> allow,
-                            List<Account> accounts) {
+                            List<Account> accounts, Map<UUID, DiscardPolicy> discardPolicies) {
         this();
+        this.discardPolicies.putAll(discardPolicies);
         modeNames.forEach((uuid, name) -> modes.put(uuid, Mode.byName(name)));
         tables.put(Verdict.Kind.DENY, List.copyOf(deny));
         tables.put(Verdict.Kind.ASK, List.copyOf(ask));
@@ -221,6 +225,15 @@ public final class PermissionStore extends SavedData {
 
     public void setMode(UUID companion, Mode mode) {
         modes.put(companion, mode);
+        setDirty();
+    }
+
+    public DiscardPolicy discardOf(UUID companion) {
+        return discardPolicies.getOrDefault(companion, DiscardPolicy.DEFAULT);
+    }
+
+    public void setDiscard(UUID companion, DiscardPolicy policy) {
+        discardPolicies.put(companion, policy);
         setDirty();
     }
 

@@ -39,7 +39,7 @@ public final class Permission {
         return new Gate(actor, policy, PlacedBlocks.of(level),
                 Structures.capture(level, companion.blockPosition(), Structures.CAPTURE_RADIUS_CHUNKS),
                 config.unknownAsOther(), ConsentDesk.of(companion).granted(), store == null ? Hits.NONE : store::hit,
-                ProtectedBlocks.of(level));
+                ProtectedBlocks.of(level), store == null ? DiscardPolicy.DEFAULT : store.discardOf(companion.getUUID()));
     }
 
     /** 主线程:对活世界裁决一个动作。 */

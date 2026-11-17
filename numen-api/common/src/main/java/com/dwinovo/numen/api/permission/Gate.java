@@ -31,6 +31,7 @@ public final class Gate {
     private final List<ConsentItem> granted;
     private final Hits hits;
     private final ProtectedBlocks protectedBlocks;
+    private final DiscardPolicy discardPolicy;
 
     /**
      * @param actor      要动手的同伴是谁、她的名字与主人;测试可传 {@link Actor#NOBODY}
@@ -49,6 +50,11 @@ public final class Gate {
 
     public Gate(Actor actor, Policy policy, PlacedBlocks placed, Structures structures, boolean unknownAsOther,
                 List<ConsentItem> granted, Hits hits, ProtectedBlocks protectedBlocks) {
+        this(actor, policy, placed, structures, unknownAsOther, granted, hits, protectedBlocks, DiscardPolicy.DEFAULT);
+    }
+
+    public Gate(Actor actor, Policy policy, PlacedBlocks placed, Structures structures, boolean unknownAsOther,
+                List<ConsentItem> granted, Hits hits, ProtectedBlocks protectedBlocks, DiscardPolicy discardPolicy) {
         this.actor = actor;
         this.policy = policy;
         this.placed = placed;
@@ -57,6 +63,7 @@ public final class Gate {
         this.granted = List.copyOf(granted);
         this.hits = hits;
         this.protectedBlocks = protectedBlocks;
+        this.discardPolicy = discardPolicy;
     }
 
     public Mode mode() {
@@ -96,7 +103,7 @@ public final class Gate {
     }
 
     private Facts facts(BlockGetter view, ServerLevel live) {
-        return new Facts(view, placed, live, actor, structures, unknownAsOther, protectedBlocks);
+        return new Facts(view, placed, live, actor, structures, unknownAsOther, protectedBlocks, discardPolicy);
     }
 
     private Verdict decide(Action action, Facts facts) {

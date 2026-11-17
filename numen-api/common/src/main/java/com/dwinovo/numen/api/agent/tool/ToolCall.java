@@ -38,15 +38,25 @@ public final class ToolCall {
     private final String rawArgs;
     private final ToolAnchor ctx;
     private final Consumer<String> completion;   // the single "done" sink
+    private final java.util.function.BooleanSupplier active;
 
     public ToolCall(String id, String toolName, String rawArgs, ToolAnchor ctx,
                     Consumer<String> completion) {
+        this(id,toolName,rawArgs,ctx,completion,() -> true);
+    }
+
+    public ToolCall(String id, String toolName, String rawArgs, ToolAnchor ctx,
+                    Consumer<String> completion, java.util.function.BooleanSupplier active) {
         this.id = id;
         this.toolName = toolName;
         this.rawArgs = rawArgs;
         this.ctx = ctx;
         this.completion = completion;
+        this.active = active;
     }
+
+    /** 在拥有者线程上问:被停止的异步工具不能在迟到的感知之后再发动身体。 */
+    public boolean isActive() { return active.getAsBoolean(); }
 
     /** The LLM's {@code tool_call} id — carried through to the matching result message. */
     public String id() { return id; }

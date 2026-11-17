@@ -13,9 +13,15 @@ import net.minecraft.world.level.BlockGetter;
  * @param actor     要动手的同伴是谁、她的名字与主人(放置记号与驯服记录认人只看这个);测试可传 {@link Actor#NOBODY}
  * @param structures 世界生成时记下的结构件范围(任何线程可读)
  * @param unknownAsOther 说不清是谁的方块按别人的算(专用服务器默认如此,见 {@link PermissionConfig})
+ * @param discardPolicy 当前伙伴的不可变丢弃保护偏好
  */
 public record Facts(BlockGetter view, PlacedBlocks placed, ServerLevel live, Actor actor, Structures structures,
-                    boolean unknownAsOther, ProtectedBlocks protectedBlocks) {
+                    boolean unknownAsOther, ProtectedBlocks protectedBlocks, DiscardPolicy discardPolicy) {
+
+    public Facts(BlockGetter view, PlacedBlocks placed, ServerLevel live, Actor actor, Structures structures,
+                 boolean unknownAsOther, ProtectedBlocks protectedBlocks) {
+        this(view, placed, live, actor, structures, unknownAsOther, protectedBlocks, DiscardPolicy.DEFAULT);
+    }
 
     public Facts(BlockGetter view, PlacedBlocks placed, ServerLevel live, Actor actor, Structures structures,
                  boolean unknownAsOther) {
@@ -24,6 +30,6 @@ public record Facts(BlockGetter view, PlacedBlocks placed, ServerLevel live, Act
 
     /** 同一份事实,但读不到活世界:搜索线程按保守值回答的那一份。 */
     public Facts withoutLive() {
-        return new Facts(view, placed, null, actor, structures, unknownAsOther, protectedBlocks);
+        return new Facts(view, placed, null, actor, structures, unknownAsOther, protectedBlocks, discardPolicy);
     }
 }

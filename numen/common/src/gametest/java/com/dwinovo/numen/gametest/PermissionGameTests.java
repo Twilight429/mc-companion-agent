@@ -669,12 +669,13 @@ public class PermissionGameTests {
         });
     }
 
-    /** numen.inv.drop 每次问:调用悬着等主人;允许后东西丢出来。 */
+    /** 主人特意设为询问:调用悬着等主人;允许后东西丢出来。 */
     @GameTest(template = "floor16", timeoutTicks = 100000, batch = "numen_permission")
     public static void drop_items_waits_for_the_owner(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         NumenPlayer companion = spawnAt(helper, "gametest_giver", new BlockPos(4, 2, 4), false);
         net.minecraft.server.level.ServerPlayer owner = presentOwner(helper, companion, "gametest_receiver");
+        askBeforeDropping(owner, companion);
         companion.getInventory().add(new ItemStack(Items.DIAMOND, 3));
         ToolRun record = lua(companion, "numen.inv.drop(\"minecraft:diamond\", {count = 3})");
         boolean[] answered = new boolean[1];
@@ -706,6 +707,7 @@ public class PermissionGameTests {
         ServerLevel level = helper.getLevel();
         NumenPlayer companion = spawnAt(helper, "gametest_hesitant", new BlockPos(4, 2, 4), false);
         net.minecraft.server.level.ServerPlayer owner = presentOwner(helper, companion, "gametest_changed_mind");
+        askBeforeDropping(owner, companion);
         companion.getInventory().add(new ItemStack(Items.GOLD_INGOT, 4));
         ToolRun record = lua(companion, "numen.inv.drop(\"minecraft:gold_ingot\", {count = 4})");
         boolean[] stopped = new boolean[1];
@@ -733,6 +735,7 @@ public class PermissionGameTests {
         ServerLevel level = helper.getLevel();
         NumenPlayer companion = spawnAt(helper, "gametest_waiter", new BlockPos(4, 2, 4), false);
         net.minecraft.server.level.ServerPlayer owner = presentOwner(helper, companion, "gametest_absent");
+        askBeforeDropping(owner, companion);
         companion.getInventory().add(new ItemStack(Items.EMERALD, 2));
         ToolRun record = lua(companion, "numen.inv.drop(\"minecraft:emerald\", {count = 2})");
 
@@ -967,6 +970,7 @@ public class PermissionGameTests {
         ServerLevel level = helper.getLevel();
         NumenPlayer companion = spawnAt(helper, "gametest_almoner", new BlockPos(4, 2, 4), false);
         ServerPlayer owner = presentPlayer(helper, companion, "gametest_beggar");
+        askBeforeDropping(owner, companion);
         ServerPlayer stranger = presentPlayer(helper, null, "gametest_passerby");
         companion.getInventory().add(new ItemStack(Items.DIAMOND, 2));
         companion.getInventory().add(new ItemStack(Items.EMERALD, 4));
@@ -2151,6 +2155,15 @@ public class PermissionGameTests {
             CompanionFactory.despawn(level.getServer(), companion);
             leave(owner);
         });
+    }
+
+    /** 征询场景显式关闭矿物丢弃保护,再安装主人自己的 ask 行,不依赖默认清单。 */
+    private static void askBeforeDropping(ServerPlayer owner, NumenPlayer companion) {
+        var store = storeOf(owner);
+        store.setDiscard(companion.getUUID(), new com.dwinovo.numen.api.permission.DiscardPolicy(true, false,
+                java.util.Set.of(), java.util.Set.of()));
+        store.add(com.dwinovo.numen.permission.Verdict.Kind.ASK,
+                com.dwinovo.numen.api.permission.Groups.parse("drop(*)"));
     }
 
     /** 她读规则:硬规则、主人层(她加的带注、记着命中)、出厂层各一张表。 */

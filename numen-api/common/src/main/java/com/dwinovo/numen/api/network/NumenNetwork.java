@@ -214,6 +214,12 @@ public final class NumenNetwork {
 
     public static void register() {
         com.dwinovo.numen.api.sdk.AppearanceUi.register();
+        toClient(com.dwinovo.numen.api.brain.NpcCamera.Request.TYPE,
+                com.dwinovo.numen.api.brain.NpcCamera.Request.CODEC,
+                p -> com.dwinovo.numen.api.brain.NpcCamera.Request.onClient.accept(p));
+        toServer(com.dwinovo.numen.api.brain.NpcCamera.Reply.TYPE,
+                com.dwinovo.numen.api.brain.NpcCamera.Reply.CODEC,
+                com.dwinovo.numen.api.brain.NpcCamera::answered);
         // 两个方向上一条超过单包上限的消息的片(见 Fragments):对端收齐拼回,交给原来的处理器。
         toServer(FragmentPayload.TO_SERVER, FragmentPayload.TO_SERVER_CODEC, NumenNetwork::fragmentFromClient,
                 Execution.NETWORK);

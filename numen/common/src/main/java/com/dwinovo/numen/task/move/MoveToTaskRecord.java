@@ -25,6 +25,13 @@ public final class MoveToTaskRecord extends TaskRecord<Walked> {
         this.sailing = true;
     }
 
+    /** 原生探索工具派同一件移动活,实际账经调用回报口交回。 */
+    public MoveToTaskRecord(String toolCallId, long now, Arrival arrival) {
+        super("numen.move.to", toolCallId, now + BUDGET_TICKS);
+        this.arrival=arrival;
+        this.sailing=true;
+    }
+
     private MoveToTaskRecord(TaskRecord<?> parent, long now, Arrival arrival) {
         super(parent.getToolName(), parent.getToolCallId(), now + BUDGET_TICKS);
         this.arrival = arrival;

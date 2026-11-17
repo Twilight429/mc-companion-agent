@@ -81,6 +81,27 @@ public final class OpenAIProvider implements LlmProvider {
         return m;
     }
 
+    @Override
+    public JsonObject buildUserMessage(com.dwinovo.numen.api.agent.llm.RequestPicture picture) {
+        if (picture.pngDataUrl() == null) return buildUserMessage(picture.description());
+        JsonObject message = new JsonObject();
+        message.addProperty("role", "user");
+        JsonArray content = new JsonArray();
+        JsonObject text = new JsonObject();
+        text.addProperty("type", "text");
+        text.addProperty("text", picture.description());
+        content.add(text);
+        JsonObject image = new JsonObject();
+        image.addProperty("type", "image_url");
+        JsonObject url = new JsonObject();
+        url.addProperty("url", picture.pngDataUrl());
+        url.addProperty("detail", "original");
+        image.add("image_url", url);
+        content.add(image);
+        message.add("content", content);
+        return message;
+    }
+
     private static JsonObject buildSystemMessage(String content) {
         JsonObject m = new JsonObject();
         m.addProperty("role", "system");

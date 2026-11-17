@@ -154,7 +154,10 @@ public final class InvApi {
     @Fn("Drop items from your inventory on the ground in front of you.")
     @Example("numen.inv.drop(\"minecraft:cobblestone\", {count = 32})")
     @Example("numen.inv.drop(\"rotten_flesh\")")
-    @Note("Asks your owner first unless their rules allow it; the call waits for the answer.")
+    @Note("Your per-companion discard settings protect wood and minerals by default, plus the owner's custom items. "
+            + "Protected items cannot be dropped; other items may be discarded without asking unless additional permission rules require it. "
+            + "Use numen.permission.discard_settings() to inspect the actual list before cleaning up. "
+            + "Keep useful food, tools and current task supplies unless you really do not need them.")
     @Note("Dropped items despawn after 5 minutes. To store things, numen.inv.store puts them into a chest instead.")
     @Note("Returns how many were dropped and how many remain.")
     @SeeAlso("numen.use.block")

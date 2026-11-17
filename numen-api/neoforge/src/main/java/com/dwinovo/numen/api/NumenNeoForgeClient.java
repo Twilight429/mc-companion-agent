@@ -37,6 +37,7 @@ public class NumenNeoForgeClient {
 
         // 读回上次选择的 GUI 主题(config/numen/client/ui.json)。
         com.dwinovo.numen.api.client.screen.UiTheme.init(com.dwinovo.numen.api.home.Homes.clientDir());
+        com.dwinovo.numen.api.client.camera.NpcCameraHttp.install();
 
         // Mod bus — registration events.
         modBus.addListener(NumenNeoForgeClient::registerKeyMappings);
@@ -103,6 +104,7 @@ public class NumenNeoForgeClient {
     }
 
     static void onLoggingOut(net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
+        com.dwinovo.numen.api.client.camera.NpcCameraRenderer.clear();
         // 服务端推来的一切都不算了:别让上一个存档的东西漂进下一个存档
         com.dwinovo.numen.api.client.agent.RemoteCompanions.disconnected();
         com.dwinovo.numen.api.network.NumenNetwork.disconnectedFromServer();

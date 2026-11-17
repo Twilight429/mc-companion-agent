@@ -1,12 +1,12 @@
 {
   "upstream": "https://github.com/Dwinovo/minecraft-numen",
   "upstream_commit": "daae0f14a00dfa8ab302683e93609cc862bf0798",
-  "snapshot_date": "2026-10-25",
+  "snapshot_date": "2026-11-17",
   "hash_basis": "SHA256; files without NUL bytes have CRLF normalized to LF",
   "files": [
     {
       "path": ".gitattributes",
-      "sha256": "7cf1e5388540411f1f97bc78fdf979b190e598e29bbf269aecf3f88000000d82"
+      "sha256": "d9cd2c31e3141687f129ee56a3e94e200934b86d538ef4f4de5a035d80176790"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -58,7 +58,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "838853471cb3b0779ef89e8cc624e3c444662f5b499c2320b9518b13acd7fb69"
+      "sha256": "4bb958c2b4688c89a67d00650b3561fc834a83d7e1cadea3ce6238681604ffb4"
     },
     {
       "path": "README_EN.md",
@@ -370,11 +370,15 @@
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/llm/NumenLlmClient.java",
-      "sha256": "e63831ce63d09d830a57cfc4d49793dd7b1997fa37c84600a8c6b3fa30d87cd7"
+      "sha256": "f41494441b28a13899b5eb8d68fd012196d021251a22fb4bd00b18b87f1dc766"
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/llm/ProtocolView.java",
       "sha256": "461645b35bcfa223c487b74b8fa91e26a3fad9bad817fb33138fdb0790536785"
+    },
+    {
+      "path": "ai/src/main/java/com/dwinovo/numen/api/agent/llm/RequestPicture.java",
+      "sha256": "bbb9240d3184f357ab9403e3d4ff698d64637df308fb4919008f09a4fd411391"
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/llm/ToolOutcome.java",
@@ -386,7 +390,7 @@
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/prompt/NumenPrompts.java",
-      "sha256": "e489f288956da1fff7334014edb95d0e236f78cc223d56f291bc20689d33f0c2"
+      "sha256": "1b21fd3a0567d2377975725d4334ab6a93fbc00bc302bc8175ee4da2b7a7f6bf"
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/prompt/package-info.java",
@@ -434,7 +438,7 @@
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/provider/LlmProvider.java",
-      "sha256": "82b4b55aa54f9d1902407c34decb62d543615ad6f45f6893fcb7a37b74c6cee1"
+      "sha256": "4cbadceed8b8fdafcaae573b4c96a409726e3fe69d2f37366a5903fbe82e21fd"
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/provider/LlmToolCall.java",
@@ -446,7 +450,7 @@
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/provider/OpenAIProvider.java",
-      "sha256": "18040fc65f409190807e4dc479764fab2100d6b5565ac1ca1760607c6b1e48ea"
+      "sha256": "01326e09d500346d2c2be7ce0b1ef88f96bb7fdccb3f5f55d1972e3e9026a03b"
     },
     {
       "path": "ai/src/main/java/com/dwinovo/numen/api/agent/provider/OpenAIResponsesProvider.java",
@@ -547,6 +551,10 @@
     {
       "path": "ai/src/test/java/com/dwinovo/numen/api/agent/llm/ProtocolViewTest.java",
       "sha256": "a61ce0b71678b3b7d8dd68ec6acff933f117f75aa73ebe54b1896a5b7b2066a2"
+    },
+    {
+      "path": "ai/src/test/java/com/dwinovo/numen/api/agent/llm/RequestPictureTest.java",
+      "sha256": "767d88ff3e4b541f5fcbf5f4fa0887bb625781e59420b9e88c13b144797d6f3b"
     },
     {
       "path": "ai/src/test/java/com/dwinovo/numen/api/agent/llm/ToolOutcomeTest.java",
@@ -854,7 +862,7 @@
     },
     {
       "path": "buildSrc/src/main/groovy/numen-e2e-fabric.gradle",
-      "sha256": "ea52afb43ef4f40fb1483a48a4a26d83665b340838168b1e6635c795e8d13707"
+      "sha256": "dc082551f3dafe03ce171054d6bd6784d25efcc91b150a5b761e8d5e6bacd338"
     },
     {
       "path": "buildSrc/src/main/groovy/numen-e2e-neoforge.gradle",
@@ -901,8 +909,20 @@
       "sha256": "4e8d721f4616e9e194a2f173559bbe644eb40babb41c91023b1c0062038f2ae9"
     },
     {
+      "path": "docs/EXPLORATION_DELIVERY.md",
+      "sha256": "fa99eadb578310713eaf99caf39321aff0ed49fe562fb354aa416e9d77a4137b"
+    },
+    {
+      "path": "docs/EXPLORATION_V2.md",
+      "sha256": "ca1f03dc677aa4b3754ba4ae81713a4189605af86b0296f4d07d8312ab0ec692"
+    },
+    {
       "path": "docs/MCMOD_INTRO.md",
       "sha256": "53bd722bb6b24990067efa2e047afd01494f9427ef976a4ba17d7e865afca3dc"
+    },
+    {
+      "path": "docs/NPC_WORLD_SIMULATION_PLAN.md",
+      "sha256": "8d5b03e3656de09c0128d8b0ccd83057f98a8f991ee0175cfe915aafa52192ba"
     },
     {
       "path": "docs/TEAM_BUILD.md",
@@ -914,15 +934,15 @@
     },
     {
       "path": "docs/TEAM_PROVENANCE.md",
-      "sha256": "4746a3f9718c1af4aea2a52959be1207d9ccc974aaf5b4d87df04b2236699d45"
+      "sha256": "43a1702e63487f0e27ace49948e7a9e6645c93b8c5b5ffdee8e61d9b9d8a8ebb"
     },
     {
       "path": "docs/TEAM_START.md",
-      "sha256": "a49241dde588a044d64065fa5f460db112e08e09e68cc513636adf3ffc92aa3e"
+      "sha256": "d75a6ee650840d676d9eb94f3cfd1e01d515f88b7295b78d4dfb409d7f165d73"
     },
     {
       "path": "docs/TEAM_VERIFICATION.md",
-      "sha256": "46ac4bfd206afb143aaba3e08c4e4a442aaf676e3d0937284c873a1b068525c6"
+      "sha256": "7d3764fe085c2cc2d576b9a1c23d35a7627d55dcfbad7139079084a5e64471b5"
     },
     {
       "path": "docs/VERSION_API_CHANGES.md",
@@ -1194,7 +1214,7 @@
     },
     {
       "path": "docs/architecture-mind-model.md",
-      "sha256": "18160c2044dd5492d9fb8c9338e3d0de8bcaeca8195ac4b05d4ad3e3a60d4ed8"
+      "sha256": "2a46de2f5545488e4ae1081a7972ccdf58dc174599e19c51b3e0dd580fc2dbb8"
     },
     {
       "path": "docs/bench.md",
@@ -1218,7 +1238,7 @@
     },
     {
       "path": "docs/input-pipeline.md",
-      "sha256": "0527609e2989453a37b7a8ff0f9025c78a5898a7369d42fdaa2544c7c954b49f"
+      "sha256": "00038176b6e8f1ab036d820aa7604bcb19c764cefddcd16a898e80a97f274062"
     },
     {
       "path": "docs/llm.md",
@@ -1250,7 +1270,7 @@
     },
     {
       "path": "e2e/build.gradle",
-      "sha256": "fa15f604e96f7b41c1d15d51c8e3ebaacb4d7bc490ee97e271e08529c7c758b0"
+      "sha256": "afa9765ec10eb75e86db8266ed5397e572df9949f4c03c98bf4d696694f35564"
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/ActionBarTest.java",
@@ -1266,7 +1286,7 @@
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/ConsentTest.java",
-      "sha256": "0c06b4d2c7c201dfa4049b1fd31cf284d3267c41dbdc0e37222fb09d517618ef"
+      "sha256": "51bef8120ec167732e434f21f5079498d446dbc8e7856b941be234e7f86da44f"
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/ConversationTest.java",
@@ -1293,8 +1313,12 @@
       "sha256": "5384932d112f3e0a025c0fb6f9b1144017bdef505f8f33e5347059f6f60e3268"
     },
     {
+      "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/LiveEnvironmentProbe.java",
+      "sha256": "0f22311bafeacee7f2529e999f941631de58685451cba5041463e2a8b5b43b4e"
+    },
+    {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/NativeClientTest.java",
-      "sha256": "bcfb33d485f3b1da7ecc204e95f565b658fc8d8007a454e9de0aef4544e0dc77"
+      "sha256": "e033761084a2380ee0cb2dd661f16092eeef61611b0886722afa70e6ffde5e5d"
     },
     {
       "path": "e2e/src/e2eTest/java/com/dwinovo/numen/e2e/Rcon.java",
@@ -1650,7 +1674,7 @@
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/ClientPayloadHandlers.java",
-      "sha256": "c5cd7d7f3ebcd41fe7772e0c6bddcec9ef7727f5d0f3fb7c2495a802a7041e5b"
+      "sha256": "974b85dbb9b1484b9940aa9c0461a1c1b74e88764f7a0a92350779212c226566"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/ConfigRootMigration.java",
@@ -1735,6 +1759,26 @@
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/agent/package-info.java",
       "sha256": "905498b79ce1ad55e0809bf0a9097a59837d3aa429b85fe6738cbd9f8e5cc81b"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/camera/CameraProjection.java",
+      "sha256": "038a841bedd2ab7aa229dd5b04126673626dff2ef479357194b785f319e54132"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/camera/CameraTarget.java",
+      "sha256": "58f72ab9000e233e148056d84eace45c85022d84bb0feb421a3635e3958b60f0"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/camera/NpcCameraHttp.java",
+      "sha256": "48bba16ce3564d47304f540d23cae4272cb2fc992f3a1432305b8ff163323b81"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/camera/NpcCameraRenderer.java",
+      "sha256": "017020686ef2a67539d27e93454da8c6f9a4dd59558df5e4a3fa2339bd68696e"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/camera/NpcSurfaceFrame.java",
+      "sha256": "d5e9884e2505c67f44957548516b876ed95687d8124db457edc68016a7205f5c"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/chat/ChatDisplayMode.java",
@@ -1842,7 +1886,7 @@
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/data/ClientPrefs.java",
-      "sha256": "eeef277aa4e984deaff233258f7c3b0cae2eca548f2f40f70e59062be4c8bc06"
+      "sha256": "3577c09b9c7e74628bfe57b875be8c3221ab24b876a92e356f8b3019890c908a"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/data/package-info.java",
@@ -1898,11 +1942,15 @@
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/screen/CompanionEditPanel.java",
-      "sha256": "32ef1cc5d38a21c964114acd61b296e46504a5f17a2f76cd13432e93b4614c9d"
+      "sha256": "85f1d136fcaf142034e5778994a3f835fae6dc8350a4a7a5c1ca3e56e0645e2a"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/screen/ConversationEditPanel.java",
       "sha256": "1a239066c9794864e563e5b19c2306ffb67e23a44feb56d70e1a4c55076ddd0c"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/screen/DiscardSettingsScreen.java",
+      "sha256": "bee0c8d6c7012f1d1560cf8d7e0dc750dd716f2159c7e3517c44239549cf2c52"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/screen/FolderEditPanel.java",
@@ -2038,7 +2086,7 @@
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/screen/settings/ThemePanel.java",
-      "sha256": "8756d03855830d637fb9ffe10b38d7a2c9dd322b4308db0edb989bf0c007f9ad"
+      "sha256": "cb3318d5a01bd052c7be0b69398f42a3fb6338969f2b8a51055c1cfef80bf563"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/client/screen/settings/VoiceFormPanel.java",
@@ -2225,8 +2273,20 @@
       "sha256": "f10f5ad3e6a1be6982c8561549e2151142ec75a9326d4f72c1d3fb78dd3be194"
     },
     {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/mixin/inject/MixinCameraTarget.java",
+      "sha256": "d4ddf517da1054f0dce6f46738899c919a7978612b1e0e1058f7aa7f0d7abf64"
+    },
+    {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/mixin/inject/MixinKeyboardInput.java",
       "sha256": "e87dcdfcfc05a10709bd834f260f3081637b95f05ec332edfa7427f7e15cf438"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/mixin/inject/MixinNpcCamera.java",
+      "sha256": "3f3f4104e129adc8ba747e840201fbf818a580416cfad242ea2bc6a450c0df04"
+    },
+    {
+      "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/mixin/inject/MixinNpcCameraTerrain.java",
+      "sha256": "a9fc82369010b7243606f25208fa9d3296fb33d97756a5b956fe9f44eda12814"
     },
     {
       "path": "numen-api/common/src/client/java/com/dwinovo/numen/api/mixin/inject/MixinPlayerRenderer.java",
@@ -2282,7 +2342,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/NumenPlugins.java",
-      "sha256": "96fee6cf512b1e8f8c02f3a5559f40edd9e8082a84b7bf181c5801fd89544bb5"
+      "sha256": "e92c44701f1910e9c867ee75be46bd6e395affa0eef890dcdb89d9ca1dcf23dd"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/llm/ModelCatalog.java",
@@ -2314,7 +2374,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/request/SystemPromptComposer.java",
-      "sha256": "92d8d1a8ba417767e3bb35be02f981b547603bad10fa6f2702d4e399701ab1a9"
+      "sha256": "4de9ffe3289ee7140bd5a8925ca68eca1698299abc41930fb89a243b9df2da36"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/request/TaskReport.java",
@@ -2342,7 +2402,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/CompanionToolPort.java",
-      "sha256": "fbe604ee073c6b15e602d75fdec4c776e55cf8552bfec775f6d31cbf11404ca0"
+      "sha256": "b57c711b448b3fa9963fb945e702d69f370afab75a504aa8ce550f1562e20ee8"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/Listing.java",
@@ -2354,7 +2414,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/NumenTool.java",
-      "sha256": "1496290c51f8a6668b1363ce55cdaf74e5a22ed972be1f68abf9327739c9c703"
+      "sha256": "638682b4fd7887981dc3f802fdfec06bcbd6b5566232f88ef7098776bbf85909"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/Schema.java",
@@ -2362,7 +2422,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/ScriptTool.java",
-      "sha256": "6cf461bf479314157e00d89e25a6c6a393d21c2435a4e0ba95905e415bfbf303"
+      "sha256": "70b15b1d80e76ab39c02d7c35d36bcddd927d764bfee26dc0b4e9ea8cbdda58c"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/SkillTool.java",
@@ -2386,7 +2446,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/ToolCall.java",
-      "sha256": "8aa47c8bb193d6501ae06170113ab706cdcfae4b61c2c9a47f8f846400a71c35"
+      "sha256": "e37a106224e4bcb26b11c19493dbe629a5149ccb7c12485a7e9f7bb1939cf873"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/agent/tool/ToolRegistry.java",
@@ -2430,7 +2490,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/CompanionBrains.java",
-      "sha256": "de34b8c9f59dd28cb0cc00ab6e27f432064e0f74c9c4fddc45fed852d22ce8d9"
+      "sha256": "65070dcd50ed1f47e2a6c81ef1848b20c113d54dc3867ed441ab3e8bc88e0bf3"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/CompanionLoop.java",
@@ -2494,7 +2554,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/LlmMind.java",
-      "sha256": "1d4cadb03f4d8afef2001f207d2180ecfdbba8ebce9003b40883b36c91b1ac32"
+      "sha256": "cce3b5f46bb191c59211813c3933d61b370762a17cc2b7d34dab4c5238ca2324"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/Mailbox.java",
@@ -2515,6 +2575,10 @@
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/ModelServices.java",
       "sha256": "47fc93c180bd4a3b091d639b04eb43ffcda187133b060169477ffcbc43071fe9"
+    },
+    {
+      "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/NpcCamera.java",
+      "sha256": "e1fd3c60882a841f99d456d0af1cd2d6379b455fca6bbecbaa43b9ca99e3179e"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/brain/OwnerInput.java",
@@ -2606,7 +2670,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/data/ModLanguageData.java",
-      "sha256": "aa55c24764a88c82b5d358c0f05204fd3c435af235f530fe3253d1bbe41a816c"
+      "sha256": "967124ddd1258f5f1ee8047359a6199bf313ba13df8197a65a1a0a605c9383cd"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/data/package-info.java",
@@ -3002,7 +3066,7 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/network/NumenNetwork.java",
-      "sha256": "0c3692fefec35b52fb9afa84adb18553f1f55014c00a0a91c4bab18e8869cf79"
+      "sha256": "a0f186308fa969742e607a31bf7efbf980b4b4aa231d3e05f1d4fe7a7a7a36d5"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/network/OwnedBody.java",
@@ -3165,20 +3229,24 @@
       "sha256": "b7649120448e6c2c0af596712455cbe70801964564e9166b20273beb4dc4c709"
     },
     {
+      "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/DiscardPolicy.java",
+      "sha256": "8d715f2f088b8f112577c98f0b9517d50fff25d3fb15bad244185d6437d1d3d7"
+    },
+    {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/FactoryRules.java",
-      "sha256": "fa55b1c6626da6ae920176a433fc61536cbda528d7d5c8ef26d1f2cb114f3488"
+      "sha256": "61e32496d9ceab27f2ca653944b1f671311a8e5eb206c36cda033fafd93de1ef"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/Facts.java",
-      "sha256": "c382452eee9fdc0c9a4951349f764b23168dd9cf935d5347aa9fe14467f5e4d3"
+      "sha256": "d928852c40c91d51ba1b6f0532420c625fa98c4e0c98f4431d315b5521ffcc16"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/Gate.java",
-      "sha256": "82adc4db45a9aff19662f3295151be50814d4ef6a7a5029a315ab4a3c4270eb1"
+      "sha256": "f300c40a5e63342436a35197a36af365add289cc151f6dc0901094450c725373"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/Groups.java",
-      "sha256": "383d78a9216b0b14f0d0939b923b9734b6844acc5960ef267adcda72469b9b22"
+      "sha256": "51c51b6431ed909a75e8894ffde36d5380c1868f743b86f5236a76c286da8c8f"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/Hits.java",
@@ -3198,11 +3266,11 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/Permission.java",
-      "sha256": "5f964f05cad73c73c1d8948bce0262d4ed24382f7367a06bc1af026d3e724a01"
+      "sha256": "8139a69d659f3f839cb446d42c3aadc3b971f0069c99319473479368b207463f"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/PermissionApi.java",
-      "sha256": "09dff74ddf0a43ae014ae3b5ce1e773a77541b2553037d6b3f63851534b59636"
+      "sha256": "f2611d329159c1e228957719dde26a6bd70b45bbc0ec712a3feecd55f37093a5"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/PermissionConfig.java",
@@ -3214,11 +3282,11 @@
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/PermissionLibrary.java",
-      "sha256": "7bec6eac160d6fdf5479dfc15024208b714c305cd8ca1ed94297b49b62df87c1"
+      "sha256": "0dc87c5f3e0cdb43a55a97a40e11951a5c5cd6dfe0311a740a3f661f3b6e451a"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/PermissionStore.java",
-      "sha256": "88d64a79371a2a459d24c6a150d2bed8d790792a7781c4cd6568de12e82c96c7"
+      "sha256": "de50dce7351c15c0823c10a6f047c964f5c9aaa23888397df39a52d4c3c57093"
     },
     {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/permission/PlacedBlocks.java",
@@ -3545,6 +3613,10 @@
       "sha256": "f35c60677bc6903314e97271dd4eaba84f5e8d77112dd874b6eaa42efccfe230"
     },
     {
+      "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/sdk/SceneCamera.java",
+      "sha256": "abb8f7f67427310c8e0652792383bffdde5ac020e657b94b56fc4d4a7c5bf311"
+    },
+    {
       "path": "numen-api/common/src/main/java/com/dwinovo/numen/api/sdk/SeeAlso.java",
       "sha256": "8a30a723ffece93be00042ab2570de8975142ef0db2c762ecf6288bef3a429a3"
     },
@@ -3866,7 +3938,7 @@
     },
     {
       "path": "numen-api/common/src/main/resources/numen_api.mixins.json",
-      "sha256": "afcfe6ce5f9183a29888c368552e19e7a76e55b6fc9671a8362a88759cd39f3a"
+      "sha256": "c49b20326e027a0bd1e69efc3506de1714f8bb12444dc67364f4bd84f29e99d5"
     },
     {
       "path": "numen-api/common/src/main/resources/numen_api.png",
@@ -3903,6 +3975,10 @@
     {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/agent/request/InventoryBlockTest.java",
       "sha256": "63cef2066165c9262584910532bbc3ba0a36d795b3623c3247c7827cd99dc6f5"
+    },
+    {
+      "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/agent/request/SystemPromptComposerCoreTest.java",
+      "sha256": "726f71e26c9f47ebd1a91d2d599edfa2757df9534d6d79c4c4b3e3d146cf99d9"
     },
     {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/agent/skill/SkillInjectionTest.java",
@@ -3997,6 +4073,10 @@
       "sha256": "e3319f62af0b0ee4aaa6dd2c0b6ea1fb4d2c28b3fa95105b3113633e4433d789"
     },
     {
+      "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/brain/NpcCameraTest.java",
+      "sha256": "2e0188875848c3178fd843693163edab5b655014636fde78b165c1aa07207b9f"
+    },
+    {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/brain/OwnerInputTest.java",
       "sha256": "01bdffcb4998c2279ac95ffd795c3b5577e1d3059210b3f1395da0a751fdc88c"
     },
@@ -4043,6 +4123,18 @@
     {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/client/agent/ServerPermissionTest.java",
       "sha256": "dd4de8d9c61c73ab5ae0e0f1fb1a03d9aa027456968d1a08225f636d5899b030"
+    },
+    {
+      "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/client/camera/CameraProjectionTest.java",
+      "sha256": "744f68b6abe1f198e0c65e7f49c50e7e97caeb4729aab2b51159fcee47cf29b0"
+    },
+    {
+      "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/client/camera/NpcCameraHttpTest.java",
+      "sha256": "0fd883e3d675362b558a5dd0bba008fbaf8ac030a6e923ec1bfa10af7734a48e"
+    },
+    {
+      "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/client/camera/VisionSwitchTest.java",
+      "sha256": "fd525f1d83a4c394e4c662d363569a2b7ac33ac05c6cbace5a2edc8636097303"
     },
     {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/client/command/ChatCommandsTest.java",
@@ -4309,8 +4401,12 @@
       "sha256": "d07304f5402beef47ae497a547bd5a2f55c6c25bdbaa3764395c6061337d7766"
     },
     {
+      "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/permission/DiscardPolicyTest.java",
+      "sha256": "d1cb6f7c42412d335e0ba38c0e805db99a05b694c9760bc637c6c9c4a8a9032e"
+    },
+    {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/permission/GateTest.java",
-      "sha256": "ddb719860a7c71a21da0992d6828e430c2bf9707e60e95f3d8a763c3a03e3139"
+      "sha256": "5e72842a29a6c0e379a7bc817e6802b8d7300e33e9fdb1fefcd36e25c5016637"
     },
     {
       "path": "numen-api/common/src/test/java/com/dwinovo/numen/api/permission/PermissionLibraryTest.java",
@@ -4522,7 +4618,7 @@
     },
     {
       "path": "numen-api/fabric/src/main/java/com/dwinovo/numen/api/NumenFabricClient.java",
-      "sha256": "bbd059270cdaada7af08d0ca86d37685bc66d5bc49be5161429536ea2ebcee22"
+      "sha256": "360fb9ea0a0b53690195a5aeeb66954b7a14a4e064d123d61e677738d98cdb05"
     },
     {
       "path": "numen-api/fabric/src/main/java/com/dwinovo/numen/api/NumenMod.java",
@@ -4666,7 +4762,7 @@
     },
     {
       "path": "numen-api/neoforge/src/main/java/com/dwinovo/numen/api/NumenNeoForgeClient.java",
-      "sha256": "d9d28cb2ff1a402c4eeb095e2469d3f48a8c7c07f630927bb6aeae849d9ff83c"
+      "sha256": "dbe2ec1e0a9cc265ae271dd08601391fc933cd28f36cfbaff674ea73e0d50920"
     },
     {
       "path": "numen-api/neoforge/src/main/java/com/dwinovo/numen/api/client/voice/NeoEntityVoiceSound.java",
@@ -5110,7 +5206,7 @@
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/PermissionGameTests.java",
-      "sha256": "ebd5ebf4430650b515a9b9c347e30d9a1cf8fb92932c74d46068d5d1be4067a0"
+      "sha256": "58efa8061c86cdd977d0295129442f1dfd7a65c4a1981d0b6cda0ec126fd5c7b"
     },
     {
       "path": "numen/common/src/gametest/java/com/dwinovo/numen/gametest/PermissionPanelGameTests.java",
@@ -5190,7 +5286,7 @@
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/NumenContent.java",
-      "sha256": "ea357454bfa9ae7b5a7183085854476bba18d5eb0f008bb9e7ff1c517332551f"
+      "sha256": "f9172e21d74a6f00b283eec850ec24ae27ee1b9c2de13f7fa8629170f7adac36"
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/PlayerInv.java",
@@ -5415,6 +5511,14 @@
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/debug/PathDebugRenderer.java",
       "sha256": "a8f5c670769ffee98a4c18896eb3a6c5266f1872f693f9968603159dc397e73b"
+    },
+    {
+      "path": "numen/common/src/main/java/com/dwinovo/numen/explore/ExplorationPolicy.java",
+      "sha256": "fd3fc01b68580343e692aedc77f97c7f24fe7e0a2f76681822a60dca69de4621"
+    },
+    {
+      "path": "numen/common/src/main/java/com/dwinovo/numen/explore/ExploreTool.java",
+      "sha256": "04452b5558846c79a8814537b19911ad9e0fe62e10d5f2e661b68dd406f8eb8b"
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/gear/VanillaArmor.java",
@@ -5718,7 +5822,7 @@
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/task/inventory/DropCompanionTask.java",
-      "sha256": "3b3067132ef6f4e1accccfc40a4dfcdd669f187dff7c4f60eff35af76e61c96a"
+      "sha256": "f58295075c28062a236c03f53008488e9c61f0fde80ba1fe6c7e2710bf7436e1"
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/task/inventory/DropItemsTaskRecord.java",
@@ -5814,7 +5918,7 @@
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/task/move/MoveToTaskRecord.java",
-      "sha256": "6f0018e9012957ea0cef5a7bf84f94dcb3dc53ebe3d69beff3e7c2897a8e0e8d"
+      "sha256": "694c77ad988e0abf67f8a8f9110e715672d7793f45428caa679d2510d3648ad1"
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/task/move/Where.java",
@@ -5918,7 +6022,7 @@
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/tools/inventory/InvApi.java",
-      "sha256": "2fa3c2d53e539d9a3a1f2ee8ebd48adc80995380bef428049bdaa6011ca868fd"
+      "sha256": "f0539d3426fe2cfb28ddc3f8ab6c83b8374e391854a0b9d0661f9faa9f8d6124"
     },
     {
       "path": "numen/common/src/main/java/com/dwinovo/numen/tools/inventory/package-info.java",
@@ -5991,6 +6095,10 @@
     {
       "path": "numen/common/src/main/resources/numen.png",
       "sha256": "74cd035041a825cc154bf08766d3424a92e89d4f5417ff35040fe315c4ef92ee"
+    },
+    {
+      "path": "numen/common/src/main/resources/numen/explore_predict.py",
+      "sha256": "7e1c0b77817d63c97c299e6cce08722f6182ffd5e7071eb7bc8a53eb95584493"
     },
     {
       "path": "numen/common/src/main/resources/numen/modules/numen/build.lua",
@@ -6269,6 +6377,10 @@
       "sha256": "079d5e306badf2efba0303c3561bc21f18779973059203184c34200fab771017"
     },
     {
+      "path": "numen/common/src/main/resources/numen/skills/numen/visual_exploration/SKILL.md",
+      "sha256": "a57d4892b868a9b1a464342313fed3bd290e715fa34a0d7ef58146603936b6f1"
+    },
+    {
       "path": "numen/common/src/main/resources/numen/skills/numen/world_atlas/SKILL.md",
       "sha256": "92eed71cba2038418dce10f7182163286c053c71523f110dbe44750fbf37b6e5"
     },
@@ -6363,6 +6475,14 @@
     {
       "path": "numen/common/src/test/java/com/dwinovo/numen/data/ModBlockTagDataTest.java",
       "sha256": "66a7d4c00c8ba710c00d2f6d7f66b95af46a24ecd61de86cb104f149a82794d3"
+    },
+    {
+      "path": "numen/common/src/test/java/com/dwinovo/numen/explore/ExplorationPolicyTest.java",
+      "sha256": "0fe0fd1e873c16d6e284b3396ae3edf1c9c6a53c11fe6427564b5112cc8efc7d"
+    },
+    {
+      "path": "numen/common/src/test/java/com/dwinovo/numen/explore/ExploreToolTest.java",
+      "sha256": "845241136557dc7ef5f51e4056caa6343ece6f8e7f7febc2facadf9cb2aac21d"
     },
     {
       "path": "numen/common/src/test/java/com/dwinovo/numen/gear/WardrobeNamesTest.java",
@@ -6466,7 +6586,7 @@
     },
     {
       "path": "numen/common/src/test/java/com/dwinovo/numen/tools/work/NumenGroupsTest.java",
-      "sha256": "f0b46bbbd0c65ae9ef84019c70dc2291c85a1714ec62b4cc0ebad13fe155ab31"
+      "sha256": "2a0597488319c2e60f99e8507931b3e41de7abd117417d48b890305139c04cf5"
     },
     {
       "path": "numen/common/src/testFixtures/java/com/dwinovo/numen/gametest/GameTestKit.java",
@@ -7985,8 +8105,20 @@
       "sha256": "7e0ff48d9f59ab8982d22732a86135eeddca6d072dd6768e9b0acae106697347"
     },
     {
+      "path": "tools/install-exploration.ps1",
+      "sha256": "6792bcb31c2563b74a7b94b7ffb112769367c2d52adf9d4004888a3e2af15310"
+    },
+    {
+      "path": "tools/npc_surface_observer.py",
+      "sha256": "39ad8c0f240022829b63b95c442e7e3c97192e3b149aa8fdd8072064b80b7ea7"
+    },
+    {
       "path": "tools/prepare_team_source.py",
-      "sha256": "a0d34a659baa5c426a83bfa7e07529f578aa93c26eda25ba27da46dd40d2a623"
+      "sha256": "844cf605f6419648ecab741680770f278d3b6dcac7a5b96085ba962406596828"
+    },
+    {
+      "path": "tools/start-camera-session.ps1",
+      "sha256": "102aa70c0ffa02de34c8d20c79bcbf11ae4867c93450e5daaf80087d5134d58a"
     },
     {
       "path": "tools/team-build.ps1",
@@ -7995,6 +8127,10 @@
     {
       "path": "tools/team-fabric.yml",
       "sha256": "f6bea60cebe44a409592f634e9c259dcc955182eb3b8036030ae2e0852051bb3"
+    },
+    {
+      "path": "tools/test_npc_surface_observer.py",
+      "sha256": "3733f6d808316b39a5793a69d222d355cc4d7ae2554e0962448fca61a37e961f"
     },
     {
       "path": "tools/third-party-nav/build.gradle",

@@ -101,7 +101,8 @@ public final class NumenPlugins {
      * ({@link WaterState});其后是插件经 {@link NumenApi#contributeBodyState} 登记的——同一条出错隔离、同一次变化检测。
      */
     private static final List<Function<NumenPlayer, String>> BODY_STATE =
-            new CopyOnWriteArrayList<>(List.of(NumenPlugins::worn, WaterState::describe));
+            new CopyOnWriteArrayList<>(List.of(NumenPlugins::worn, WaterState::describe,
+                    com.dwinovo.numen.api.permission.DiscardPolicy::describe));
 
     /** 这具身体此刻所有的穿戴位置:各来源按登记顺序接起来。<b>Numen API 内部调用</b>(服务端主线程)。 */
     public static List<GearSlot> gearSlots(NumenPlayer body) {

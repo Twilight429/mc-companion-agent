@@ -62,6 +62,19 @@ public final class ThemePanel {
         // 主动性:她多久把攒下的世界变化说一次。这是"及时性"的旋钮,不是"话多话少"——
         // 拉小知道得及时、token 烧得快,拉大知道得晚、省。默认 3。
         int sy = ny + Math.max(NumenStyle.ROW_PITCH, noticesH + 6);
+        Toggle vision = ui.add(new Toggle(com.dwinovo.numen.api.client.data.ClientPrefs.experimentalVisionEnabled(),
+                enabled -> {
+                    com.dwinovo.numen.api.client.data.ClientPrefs.setExperimentalVisionEnabled(enabled);
+                    if (enabled) com.dwinovo.numen.api.client.camera.NpcCameraHttp.install();
+                    else {
+                        com.dwinovo.numen.api.client.camera.NpcCameraHttp.stop();
+                        com.dwinovo.numen.api.client.camera.NpcCameraRenderer.disable();
+                    }
+                }));
+        vision.setBounds(x, sy, 22, 11);
+        int visionH = wrapped(I18n.get(ModLanguageData.Keys.EXPERIMENTAL_VISION),
+                x + 28, sy + 1, w - 28, Label.Role.SECONDARY);
+        sy += Math.max(NumenStyle.ROW_PITCH, visionH + 6);
         String initiativeText = I18n.get(ModLanguageData.Keys.THEME_INITIATIVE);
         Label initTitle = ui.add(new Label(initiativeText, Label.Role.SECONDARY));
         initTitle.setBounds(x, sy + 1, Minecraft.getInstance().font.width(initiativeText), 9);

@@ -31,7 +31,7 @@ public final class ScriptTool implements NumenTool {
         // 照 Claude Code 的工具描述写:动词起头,只说它做什么、环境是什么样
         ScriptEngine engine = ScriptEngine.IN_USE;
         return "Runs a " + engine.language() + " program that acts through your API, and returns one receipt when it "
-                + "ends. This is how you do anything in the world: every function is listed in <api>.\n"
+                + "ends. Use it for ordinary world actions: every function is listed in <api>. Specialized tools, when listed, execute their own bounded work.\n"
                 + "- " + engine.howToCall() + "\n"
                 + "- One call is a one-line program: `numen.status.self()`. When each next step follows from what a "
                 + "call returned — going through what a scan found, repeating until nothing is left, stopping on the "

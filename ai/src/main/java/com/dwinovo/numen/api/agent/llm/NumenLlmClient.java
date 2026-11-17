@@ -158,6 +158,16 @@ public final class NumenLlmClient {
                                                        String sessionId,
                                                        CancelToken cancel,
                                                        Consumer<Delta> onDelta) {
+        return chatStreaming(messages, tools, systemPrompt, sessionId, cancel, onDelta, null);
+    }
+
+    /** 本轮现场图只挂请求末尾,不会进入历史、缓存的 client 实例或下一轮请求。 */
+    public CompletableFuture<ChatResult> chatStreaming(List<ConvoState.Msg> messages,
+                                                       Collection<? extends IToolSpec> tools,
+                                                       String systemPrompt, String sessionId,
+                                                       CancelToken cancel, Consumer<Delta> onDelta,
+                                                       RequestPicture picture) {
+        if (cancel.isCancelled()) return CompletableFuture.failedFuture(new java.util.concurrent.CancellationException());
         // -- 1. Build wire-format messages and tool list via provider. The recorded history goes
         //        through ProtocolView first — this is the only place a history becomes a request,
         //        so tool-call pairing, cut-off turns and adjacent user messages are settled here once.
@@ -174,6 +184,10 @@ public final class NumenLlmClient {
                 case ConvoState.Msg.Halt h -> throw new IllegalStateException(
                         "ProtocolView.forWire never emits Halt: " + h.reason());
             }
+        }
+        if (picture != null) {
+            if (!RequestPicture.supported(endpoint)) throw new IllegalArgumentException("endpoint does not support NPC pictures");
+            wire.add(provider.buildUserMessage(picture));
         }
         JsonArray toolList = provider.buildToolList(tools);
         JsonObject body = provider.buildRequestBody(endpoint.model(), systemPrompt, wire, toolList,

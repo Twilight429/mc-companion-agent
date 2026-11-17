@@ -170,7 +170,8 @@ class GateTest {
         assertTrue(gate.judge(Action.useBlock(chest, world.getBlockState(chest)), world).allowed(), "开箱子随便");
         assertTrue(gate.judge(Action.take(chest, world.getBlockState(chest), Items.DIRT), world).allowed(),
                 "从主人的容器拿东西放行");
-        assertTrue(gate.judge(Action.drop(Items.DIRT), world).asks(), "丢东西要问");
+        assertTrue(gate.judge(Action.drop(Items.DIRT), world).allowed(), "未保护物品自主清理");
+        assertEquals(Verdict.Kind.DENY, gate.judge(Action.drop(Items.DIAMOND), world).kind(), "矿物默认保护");
         assertTrue(gate.judge(Action.place(cobble.above(), Blocks.AIR.defaultBlockState(), Items.DIRT), world).allowed(),
                 "贴着主人的东西放泥土随便");
         assertTrue(gate.judge(Action.place(cobble.above(), Blocks.AIR.defaultBlockState(), Items.LAVA_BUCKET), world)
@@ -183,18 +184,18 @@ class GateTest {
 
     @Test
     void factoryTablesAreWhatTheDesignSays() {
-        assertEquals(List.of("break(protected)", "place(protected)", "break(other)", "place(other)", "take(other)", "attack(other)", "use_entity(other)",
+        assertEquals(List.of("drop(kept_item)", "break(protected)", "place(protected)", "break(other)", "place(other)", "take(other)", "attack(other)", "use_entity(other)",
                 "place(hazard_item & near(other))"), FactoryRules.HARD);
         assertEquals(List.of(
                 "break(owner)", "break(unknown)", "break(structure(#minecraft:village))", "break(block_entity)",
                 "break(self & contents)", "attack(owner)", "attack(self)", "attack(named)", "attack(villager)",
-                "use_entity(owner)", "drop(*)", "place(hazard_item & near(owner))"), FactoryRules.ASK);
+                "use_entity(owner)", "place(hazard_item & near(owner))"), FactoryRules.ASK);
         assertEquals(List.of(
                 "break(nature & !block_entity)", "break(self & !contents)",
                 "break(structure & !structure(#minecraft:village) & !block_entity)",
                 "place(!hazard_item)", "place(hazard_item & !near(owner) & !near(other))",
                 "attack(hostile)", "attack(nature & !named & !villager)", "use_block(*)", "use_entity(nature)",
-                "use_entity(self)", "take(owner)", "take(self)", "take(structure & !structure(#minecraft:village))",
+                "use_entity(self)", "take(owner)", "take(self)", "take(structure & !structure(#minecraft:village))", "drop(!kept_item)",
                 "command(help)", "command(list)", "command(me)", "command(msg)", "command(teammsg)",
                 "command(seed)", "command(random)"), FactoryRules.ALLOW);
         assertTrue(FactoryRules.layer().deny().isEmpty(), "出厂层不写死任何拒绝;拒绝只在硬规则与主人的 deny 行");
@@ -426,8 +427,8 @@ class GateTest {
 
         // 没有任何一行覆盖:只钉对象
         Gate bare = gate(Mode.ASK, RuleSet.EMPTY, RuleSet.EMPTY, placed, Structures.NONE, false);
-        Action drop = Action.drop(Items.DIAMOND);
-        assertEquals("drop(minecraft:diamond)",
+        Action drop = Action.drop(Items.DIRT);
+        assertEquals("drop(minecraft:dirt)",
                 bare.consentItem(drop, bare.judge(drop, world), world).remember().toString());
 
         // 说不清的木板:记的是这一种

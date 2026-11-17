@@ -29,6 +29,7 @@ public class NumenFabricClient implements ClientModInitializer {
 
         // 读回上次选择的 GUI 主题(config/numen/client/ui.json)。
         com.dwinovo.numen.api.client.screen.UiTheme.init(com.dwinovo.numen.api.home.Homes.clientDir());
+        com.dwinovo.numen.api.client.camera.NpcCameraHttp.install();
 
         // G → companion roster panel (chat entry + settings/reset live in there).
         KeyBindingHelper.registerKeyBinding(com.dwinovo.numen.api.client.NumenKeys.OPEN_ROSTER);
@@ -65,6 +66,7 @@ public class NumenFabricClient implements ClientModInitializer {
                     // 服务端推来的一切都不算了:别让上一个存档的东西漂进下一个存档
                     com.dwinovo.numen.api.client.agent.RemoteCompanions.disconnected();
                     com.dwinovo.numen.api.network.NumenNetwork.disconnectedFromServer();
+                    com.dwinovo.numen.api.client.camera.NpcCameraRenderer.clear();
                     com.dwinovo.numen.api.client.data.ClientNumenState.clear();
                     com.dwinovo.numen.api.client.agent.KnownSkins.clear();
                     com.dwinovo.numen.api.client.hud.SpeechBubbles.clear();

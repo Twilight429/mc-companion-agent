@@ -28,6 +28,7 @@ public final class ClientPrefs {
     private static boolean talkHint = true;
     private static boolean messageNotices = true;
     private static boolean voiceEnabled = true;
+    private static volatile boolean experimentalVisionEnabled = false;
     /** 最近用过的斜杠命令名,最新在前。排序归命令层,这里只负责存。 */
     private static final java.util.List<String> recentCommands = new java.util.ArrayList<>();
 
@@ -35,6 +36,7 @@ public final class ClientPrefs {
 
     /** 客户端启动读一次;文件缺失或损坏都退回默认值,不阻断启动。 */
     public static void init(Path numenConfigDir) {
+        experimentalVisionEnabled = false;
         doc = new JsonDoc(numenConfigDir.resolve("ui.json"), JsonDoc.Format.of(1), NumenIo.inline("numen-prefs"));
         try {
             JsonObject o = doc.read().orElse(null);
@@ -45,6 +47,7 @@ public final class ClientPrefs {
             if (o.has("talkHint")) talkHint = o.get("talkHint").getAsBoolean();
             if (o.has("messageNotices")) messageNotices = o.get("messageNotices").getAsBoolean();
             if (o.has("voiceEnabled")) voiceEnabled = o.get("voiceEnabled").getAsBoolean();
+            if (o.has("experimentalVisionEnabled")) experimentalVisionEnabled = o.get("experimentalVisionEnabled").getAsBoolean();
             if (o.has("recentCommands") && o.get("recentCommands").isJsonArray()) {
                 for (var el : o.getAsJsonArray("recentCommands")) recentCommands.add(el.getAsString());
             }
@@ -92,6 +95,14 @@ public final class ClientPrefs {
         persist();
     }
 
+    /** 本机视觉实验总开关:默认不渲染 NPC 相机,也不提供外部模型预测输入。 */
+    public static boolean experimentalVisionEnabled() { return experimentalVisionEnabled; }
+
+    public static void setExperimentalVisionEnabled(boolean enabled) {
+        experimentalVisionEnabled = enabled;
+        persist();
+    }
+
     /** 最近用过的斜杠命令,最新的在前。补全列表按它排序。 */
     public static java.util.List<String> recentCommands() {
         return java.util.List.copyOf(recentCommands);
@@ -112,6 +123,7 @@ public final class ClientPrefs {
         o.addProperty("talkHint", talkHint);
         o.addProperty("messageNotices", messageNotices);
         o.addProperty("voiceEnabled", voiceEnabled);
+        o.addProperty("experimentalVisionEnabled", experimentalVisionEnabled);
         com.google.gson.JsonArray recent = new com.google.gson.JsonArray();
         for (String name : recentCommands) recent.add(name);
         o.add("recentCommands", recent);

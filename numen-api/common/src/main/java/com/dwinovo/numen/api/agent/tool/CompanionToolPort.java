@@ -173,7 +173,7 @@ public final class CompanionToolPort implements ToolPort, SerialCalls.Port {
             }
             // 带规范名(tool.name())而不是 LLM 写的那个:大小写宽松只在 resolve 这一步
             tool.invoke(new ToolCall(call.id(), tool.name(), call.arguments(), anchor.get(),
-                    json -> landed.accept(SerialCalls.Settled.of(json))));
+                    json -> landed.accept(SerialCalls.Settled.of(json)), () -> calls.holds(call.id())));
         } catch (IllegalArgumentException invalid) {
             landed.accept(SerialCalls.Settled.of(ToolOutcome.failure("invalid arguments: " + invalid.getMessage())));
         } catch (RuntimeException ex) {

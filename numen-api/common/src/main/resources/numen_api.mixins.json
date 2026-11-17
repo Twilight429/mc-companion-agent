@@ -16,7 +16,10 @@
     "ChatComponentAccessor",
     "ToastComponentAccessor",
     "MixinKeyboardInput",
-    "MixinPlayerRenderer"
+    "MixinPlayerRenderer",
+    "MixinCameraTarget",
+    "MixinNpcCamera",
+    "MixinNpcCameraTerrain"
   ],
   "server": [],
   "injectors": {

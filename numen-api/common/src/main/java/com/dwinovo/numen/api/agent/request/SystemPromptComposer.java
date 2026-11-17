@@ -36,7 +36,7 @@ public final class SystemPromptComposer {
         // Persona = the mutable "who you are" layer, wrapped so it's clearly delimited from the
         // immutable operating core (NumenPrompts.ENTITY_PROMPT) that follows.
         sb.append("<persona>\n").append(base.strip()).append("\n</persona>");
-        sb.append(NumenPrompts.ENTITY_PROMPT);
+        sb.append(operatingInstructions());
         if (!skillsXml.isEmpty()) {
             sb.append("\n\n").append(skillsXml);
         }
@@ -61,4 +61,7 @@ public final class SystemPromptComposer {
         sb.append(NumenPrompts.SPEAKING);
         return sb.toString();
     }
+
+    /** 运行期取操作规约,防止加载器构建保留跨模块内联的旧文本。 */
+    static String operatingInstructions() { return NumenPrompts.ENTITY_PROMPT; }
 }

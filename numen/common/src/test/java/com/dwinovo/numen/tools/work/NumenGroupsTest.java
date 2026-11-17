@@ -54,7 +54,7 @@ class NumenGroupsTest {
 
     @Test
     void theToolsRunAProgramLoadASkillWriteThePlanAndKeepNotes() {
-        assertEquals(List.of(ScriptEngine.IN_USE.toolName(), com.dwinovo.numen.api.agent.tool.SkillTool.NAME,
+        assertEquals(List.of("explore", ScriptEngine.IN_USE.toolName(), com.dwinovo.numen.api.agent.tool.SkillTool.NAME,
                         com.dwinovo.numen.api.agent.tool.TodoTool.NAME, com.dwinovo.numen.api.agent.tool.MemoryTool.NAME),
                 ToolRegistry.all().stream().map(t -> t.name()).toList());
         for (String gone : List.of("move_goto", "work_dig", "status_self", "scan_blocks", "skill_load",

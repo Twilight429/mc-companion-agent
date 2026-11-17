@@ -26,6 +26,7 @@ import java.util.UUID;
  * <ul>
  *   <li>{@code "settings"}:{@code hardRules}(服主开着硬规则吗);</li>
  *   <li>{@code "mode"}:{@code companion}(UUID)、{@code name}、{@code mode}({@code ask}/{@code bypass}/{@code observe});</li>
+ *   <li>{@code "discard"}:每位伙伴的丢弃偏好,含 UUID、wood/minerals 分类开关与 keep/discard 单件例外;</li>
  *   <li>{@code "rule"}:{@code layer}({@code hard}/{@code owner}/{@code factory})、{@code table}({@code deny}/{@code ask}/
  *       {@code allow})、{@code rule}(规范原文,带 {@code @同伴名} 的话在末尾)、{@code source}({@code owner}/{@code her},
  *       只有主人层)、{@code note}(她写的理由,可空)、{@code count}、{@code last}(最近命中的墙钟毫秒,没命中过为 0)。
@@ -43,6 +44,7 @@ public final class PermissionLibrary {
     public static final String DELETE = "delete";
     public static final String RESET = "reset";
     public static final String MODE = "mode";
+    public static final String DISCARD = "discard";
 
     /** 每一层里表排开的次序:先拒绝,再询问,再允许——越上面越是"说了不行"。界面按这个次序分组。 */
     private static final List<Verdict.Kind> TABLE_ORDER = List.of(Verdict.Kind.DENY, Verdict.Kind.ASK, Verdict.Kind.ALLOW);
@@ -90,6 +92,10 @@ public final class PermissionLibrary {
             row.addProperty("name", name);
             row.addProperty("mode", word(ground.store().modeOf(uuid)));
             out.add(row);
+            JsonObject discard = ground.store().discardOf(uuid).json();
+            discard.addProperty("row", "discard");
+            discard.addProperty("companion", uuid.toString());
+            out.add(discard);
         });
         RuleBook book = RuleBook.of(ground.store(), ground.hardRules());
         book.hard().forEach(line -> out.add(ruleRow("hard", line)));
@@ -149,6 +155,18 @@ public final class PermissionLibrary {
                 }
                 store.setMode(companion, mode);
                 return Outcome.DONE;
+            }
+            case DISCARD: {
+                UUID companion = uuid(text(body, "companion"));
+                if (companion == null || !ground.companions().containsKey(companion))
+                    return Outcome.problem("只能设置自己名下的伙伴");
+                try {
+                    DiscardPolicy policy = DiscardPolicy.fromJson(body, true);
+                    store.setDiscard(companion, policy);
+                    return Outcome.DONE;
+                } catch (IllegalArgumentException | IllegalStateException | NullPointerException malformed) {
+                    return Outcome.problem("丢弃设置无效: " + malformed.getMessage());
+                }
             }
             default:
                 return Outcome.problem("unknown operation");
